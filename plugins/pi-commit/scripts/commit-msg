@@ -1,0 +1,77 @@
+#!/bin/sh
+TYPES="feat fix perf refactor docs test style build ci chore security revert etc"
+MIN_DESCRIPTION_CHARS=10
+VAGUE_DESCRIPTIONS="update code|update file|update files|minor changes|minor fixes|small changes|some changes|fix some bugs|แก้ไขเล็กน้อย|อัพเดทโค้ด|อัปเดตโค้ด"
+TEAM_REMOTE_PATTERN='[:/]tycthailand/'
+EXAMPLE='fix(login): แก้ปุ่มบันทึกกดไม่ได้'
+
+msg_file=$1
+
+run_repo_hook() {
+  repo_hook="$(git rev-parse --git-common-dir)/hooks/commit-msg"
+  [ -x "$repo_hook" ] && exec "$repo_hook" "$@"
+  exit 0
+}
+
+is_team_repo() {
+  git remote -v 2>/dev/null | tr 'A-Z' 'a-z' | grep -q "$TEAM_REMOTE_PATTERN"
+}
+
+char_count() {
+  printf '%s' "$1" | LC_ALL=C tr -d '\200-\277' | wc -c | tr -d ' '
+}
+
+is_team_repo || run_repo_hook "$@"
+
+message=$(tr -d '\r' < "$msg_file" | awk '/^# -+ >8 -+$/ {exit} /^#/ {next} {print}')
+subject=$(printf '%s\n' "$message" | awk 'NF {sub(/^[ \t]+/, ""); sub(/[ \t]+$/, ""); print; exit}')
+
+[ -z "$subject" ] && run_repo_hook "$@"
+printf '%s\n' "$message" | grep -v '^[[:space:]]*deploy![[:space:]]*$' | grep -q '[^[:space:]]' || run_repo_hook "$@"
+case $subject in
+  "Merge "* | 'Revert "'* | "fixup! "* | "squash! "* | "amend! "*) run_repo_hook "$@" ;;
+esac
+
+problems=""
+add_problem() {
+  problems="$problems
+  Problem   : $1"
+}
+
+author=$(git var GIT_AUTHOR_IDENT 2>/dev/null)
+author_name=${author%% <*}
+case $author_name in
+  [0-9][0-9][0-9][0-9]) ;;
+  *) add_problem "git user.name is \"$author_name\" - it must be your 4-digit employee code
+              Fix: git config --global user.name \"<code>\"   (or run /pi-commit:setup in Claude Code)" ;;
+esac
+
+type_pattern=$(printf '%s' "$TYPES" | tr ' ' '|')
+if printf '%s\n' "$subject" | grep -Eq '^[a-z]+(\([^() ]+\))?: [^ ]'; then
+  commit_type=${subject%%[(:]*}
+  description=${subject#*: }
+  if ! printf '%s\n' "$commit_type" | grep -Eqx "$type_pattern"; then
+    add_problem "unknown type \"$commit_type\""
+  elif printf '%s\n' "$description" | tr 'A-Z' 'a-z' | LC_ALL=C grep -Eqx "$VAGUE_DESCRIPTIONS"; then
+    add_problem "description \"$description\" is too vague - say what changed and where"
+  elif [ "$(char_count "$description")" -lt "$MIN_DESCRIPTION_CHARS" ]; then
+    add_problem "description is too short - use at least $MIN_DESCRIPTION_CHARS characters"
+  fi
+elif [ "${subject#deploy!}" != "$subject" ]; then
+  add_problem "put deploy! on its own line under the first line, e.g. -m \"$EXAMPLE\" -m \"deploy!\""
+else
+  add_problem "first line must be \"type(scope): description\" (lowercase type, one space after the colon)"
+fi
+
+[ -z "$problems" ] && run_repo_hook "$@"
+
+cat >&2 <<EOF
+pi-commit: commit rejected
+
+  You wrote : $subject$problems
+
+  Expected  : type(scope): description      (scope is optional)
+  Example   : $EXAMPLE
+  Types     : $TYPES
+EOF
+exit 1

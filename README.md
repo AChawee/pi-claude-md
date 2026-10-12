@@ -34,6 +34,7 @@ claude
 | [tyc-design-system](./plugins/tyc-design-system/skills/tyc-design-system/SKILL.md) | ใช้ design system กลางของ TYC กับงาน UI | ไม่ต้อง |
 | [create-guide](./plugins/create-guide/skills/create-guide/SKILL.md) | สร้างคู่มือการใช้งานเป็น HTML ไฟล์เดียว | ไม่ต้อง |
 | [ding](./plugins/ding/skills/ding/SKILL.md) | ส่งแจ้งเตือนเข้ากลุ่ม DingTalk | ต้องกรอก `ding.env` |
+| [pi-commit](./plugins/pi-commit/skills/commit/SKILL.md) | มาตรฐาน commit ของทีม: รหัสพนักงาน + ตรวจ format | ต้องรัน `/pi-commit:setup` |
 
 ### tyc-design-system
 
@@ -58,12 +59,20 @@ claude
 - **ความปลอดภัย:** ถามห้องปลายทางทุกครั้ง และให้ยืนยันข้อความก่อนส่งเสมอ
 - **ต้องมีเพิ่ม:** Python 3.9+ · token ของ dingtalk-notify · เครื่องต้องเข้า `dingtalk.tycthailand.com` ได้
 
+### pi-commit
+
+- **ทำอะไร:** ตั้ง `git user.name` เป็นรหัสพนักงาน และติดตั้ง hook ที่ไม่ยอมให้ commit ถ้า message ไม่ตรง `type(scope): description` เพื่อให้ระบบรู้ว่าใครทำอะไร
+- **ใช้เมื่อ:** ทุกครั้งที่ commit ใน repo ของ `tycthailand` — ผ่าน `/pi-commit:commit` หรือ commit เองตามปกติ (terminal, VS Code)
+- **ตัวอย่าง:** `/pi-commit:commit` · `commit งานนี้ให้หน่อย`
+- **คู่มือฉบับเต็ม:** [docs/pi-commit-guide.html](./docs/pi-commit-guide.html) (flowchart, format, ขั้นตอนทีละ step)
+- **ต้องมีเพิ่ม:** git เท่านั้น (Windows ใช้ Git for Windows) ไม่ต้องลง Python
+
 ## สิ่งที่ต้องมี
 
 | อะไร | ใช้กับ | ตรวจด้วย |
 |---|---|---|
 | Claude Code (ทดสอบกับ 2.1.296) | ทุก skill | `claude --version` |
-| git | ทาง A | `git --version` |
+| git | ทาง A และ pi-commit | `git --version` |
 | Python 3.9+ | `/install-skills` และ ding | `python3 --version` (Windows: `python --version`) |
 
 ใช้ได้บน Linux, macOS และ Windows
@@ -106,6 +115,7 @@ claude plugin marketplace add ken1lnw/pi-claude-md
 claude plugin install tyc-design-system@pi-claude-md --scope user
 claude plugin install create-guide@pi-claude-md --scope user
 claude plugin install ding@pi-claude-md --scope user
+claude plugin install pi-commit@pi-claude-md --scope user
 ```
 
 ## ตั้งค่า ding
@@ -137,6 +147,33 @@ ding อ่าน token จากไฟล์ในเครื่องคุ�
 
 ขอ token ได้จากผู้ดูแลระบบ dingtalk-notify ของ TYCTH
 **ห้ามวาง token ในแชทของ Claude** — ถ้าเผลอวางไปแล้ว ให้ขอ token ใหม่
+
+## ตั้งค่า pi-commit
+
+ทำครั้งเดียวต่อเครื่อง หลังติดตั้ง plugin แล้ว พิมพ์ใน Claude Code:
+
+```
+/pi-commit:setup
+```
+
+Claude จะถามรหัสพนักงาน 4 หลัก แล้วตั้งค่าให้: `git user.name` = รหัส, hook ตรวจ commit (`core.hooksPath`) และ commit template
+ไม่ได้ใช้ Claude Code — clone repo แล้วรันใน terminal (Windows ใช้ Git Bash):
+
+```bash
+sh plugins/pi-commit/scripts/setup.sh install
+```
+
+format ที่บังคับ:
+
+```
+type(scope): description
+```
+
+- `type`: `feat` `fix` `perf` `refactor` `docs` `test` `style` `build` `ci` `chore` `security` `revert` `etc`
+- `scope` ไม่บังคับ · description ไทยหรืออังกฤษ อย่างน้อย 10 ตัวอักษร
+- ไม่ตรวจ: commit ที่มีแค่ `deploy!`, merge, revert, fixup · ตรวจเฉพาะ repo ที่ remote เป็น `tycthailand`
+
+อัปเดต plugin แล้วให้รัน `/pi-commit:setup` ซ้ำเพื่อ copy hook ตัวใหม่ · ถอน: `sh plugins/pi-commit/scripts/setup.sh uninstall` (คืน `user.name` เดิม)
 
 ## ตรวจว่าติดตั้งสำเร็จ
 
@@ -196,6 +233,9 @@ rm ~/.claude/skills/tyc-design-system ~/.claude/skills/create-guide
 | `python3: command not found` (Windows) | Windows ใช้ชื่อ `python` | ใช้ `python` แทน `python3` |
 | อัปเดตแล้วยังได้ของเก่า | session เดิมยังใช้เวอร์ชันเก่า | `/reload-plugins` |
 | skill ขึ้นสองชุด | มี symlink เดิมค้างอยู่ | ดู [ย้ายจากวิธี symlink เดิม](#ย้ายจากวิธี-symlink-เดิม) |
+| `pi-commit: commit rejected` | message หรือ `user.name` ไม่ตรงมาตรฐาน | อ่านบรรทัด `Problem` แล้วแก้ตาม `Example` หรือใช้ `/pi-commit:commit` |
+| commit ผิด format แต่ผ่าน | repo ไม่ได้อยู่ใต้ `tycthailand` หรือยังไม่ได้ setup | `sh plugins/pi-commit/scripts/setup.sh status` |
+| setup ขึ้น `core.hooksPath is already set` | มีเครื่องมืออื่นตั้ง global hook ไว้ | ตัดสินใจเองว่าจะ `git config --global --unset core.hooksPath` แล้ว setup ใหม่ |
 
 ## ความปลอดภัย
 

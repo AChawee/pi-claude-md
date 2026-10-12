@@ -34,6 +34,7 @@ Then type in Claude Code:
 | [tyc-design-system](./plugins/tyc-design-system/skills/tyc-design-system/SKILL.md) | Applies TYC's shared design system to UI work | No |
 | [create-guide](./plugins/create-guide/skills/create-guide/SKILL.md) | Builds a single-file HTML user guide | No |
 | [ding](./plugins/ding/skills/ding/SKILL.md) | Sends notifications to a DingTalk group | Fill in `ding.env` |
+| [pi-commit](./plugins/pi-commit/skills/commit/SKILL.md) | Team commit standard: employee code + format check | Run `/pi-commit:setup` |
 
 ### tyc-design-system
 
@@ -58,12 +59,20 @@ Then type in Claude Code:
 - **Safety:** it asks for the target room every time and asks you to confirm the message before sending.
 - **Extra requirements:** Python 3.9+, a dingtalk-notify token, and network access to `dingtalk.tycthailand.com`.
 
+### pi-commit
+
+- **What it does:** Sets `git user.name` to your employee code and installs a hook that refuses commits whose message isn't `type(scope): description`, so the team can see who did what.
+- **Use it when:** committing in any `tycthailand` repo — through `/pi-commit:commit` or as usual (terminal, VS Code).
+- **Examples:** `/pi-commit:commit` · `commit this work`
+- **Full guide:** [docs/pi-commit-guide.html](./docs/pi-commit-guide.html) (flowchart, format, step by step)
+- **Extra requirements:** git only (Git for Windows on Windows). No Python needed.
+
 ## Requirements
 
 | What | Needed for | Check with |
 |---|---|---|
 | Claude Code (tested with 2.1.296) | every skill | `claude --version` |
-| git | Option A | `git --version` |
+| git | Option A and pi-commit | `git --version` |
 | Python 3.9+ | `/install-skills` and ding | `python3 --version` (Windows: `python --version`) |
 
 Works on Linux, macOS and Windows.
@@ -106,6 +115,7 @@ claude plugin marketplace add ken1lnw/pi-claude-md
 claude plugin install tyc-design-system@pi-claude-md --scope user
 claude plugin install create-guide@pi-claude-md --scope user
 claude plugin install ding@pi-claude-md --scope user
+claude plugin install pi-commit@pi-claude-md --scope user
 ```
 
 ## Set up ding
@@ -137,6 +147,33 @@ ding only reads its token from a file on your machine. That file is never part o
 
 Ask TYCTH's dingtalk-notify administrator for a token.
 **Never paste the token into the Claude chat.** If you already did, ask for a new token.
+
+## Set up pi-commit
+
+Once per machine, after installing the plugin, type in Claude Code:
+
+```
+/pi-commit:setup
+```
+
+Claude asks for your 4-digit employee code, then sets `git user.name` to it and installs the commit hook (`core.hooksPath`) and commit template.
+Not using Claude Code? Clone the repo and run this in a terminal (Git Bash on Windows):
+
+```bash
+sh plugins/pi-commit/scripts/setup.sh install
+```
+
+Required format:
+
+```
+type(scope): description
+```
+
+- `type`: `feat` `fix` `perf` `refactor` `docs` `test` `style` `build` `ci` `chore` `security` `revert` `etc`
+- `scope` is optional · description in Thai or English, at least 10 characters
+- Not checked: commits that are only `deploy!`, merges, reverts, fixups · only repos whose remote is under `tycthailand`
+
+After updating the plugin, run `/pi-commit:setup` again to copy the new hook · Remove: `sh plugins/pi-commit/scripts/setup.sh uninstall` (restores your previous `user.name`)
 
 ## Verify the installation
 
@@ -196,6 +233,9 @@ If you used the old ding (a folder at `~/.claude/skills/ding/`):
 | `python3: command not found` (Windows) | Windows names it `python` | Use `python` instead of `python3` |
 | Still on the old version after updating | The open session keeps the old version | `/reload-plugins` |
 | Skill listed twice | An old symlink is still there | See [Migrating from the old symlink setup](#migrating-from-the-old-symlink-setup) |
+| `pi-commit: commit rejected` | The message or `user.name` doesn't meet the standard | Read the `Problem` line and follow `Example`, or use `/pi-commit:commit` |
+| A badly formatted commit went through | The repo isn't under `tycthailand`, or setup wasn't run | `sh plugins/pi-commit/scripts/setup.sh status` |
+| Setup says `core.hooksPath is already set` | Another tool owns your global git hooks | Decide yourself whether to `git config --global --unset core.hooksPath`, then rerun setup |
 
 ## Security
 

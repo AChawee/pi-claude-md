@@ -21,6 +21,11 @@
       "name": "ding",
       "source": "./plugins/ding",
       "description": "ส่งข้อความ markdown พร้อมรูป/ไฟล์แนบเข้ากลุ่ม DingTalk ของ TYCTH — ต้องกรอก token ใน ding.env ก่อนติดตั้ง"
+    },
+    {
+      "name": "pi-commit",
+      "source": "./plugins/pi-commit",
+      "description": "มาตรฐาน commit ของทีม: git user.name = รหัสพนักงาน + hook ตรวจ type(scope): description + /pi-commit:commit ช่วยเขียน message — รัน /pi-commit:setup หลังติดตั้ง"
     }
   ]
 }

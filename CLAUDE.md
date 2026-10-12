@@ -21,6 +21,10 @@ repo นี้เป็น **public** — ทุกไฟล์ที่ commit 
    - **Security** — ห้ามมี token, password, channel UUID จริง, IP ภายใน, path ส่วนตัว (`/home/<user>`, `C:\Users\<user>`) ใน repo · secret อยู่ใน `~/.config/pi-claude-md/` เท่านั้น · ห้ามให้ผู้ใช้วาง token ในแชท
 5. **ทำตามหลักการทำงานด้านล่าง** (Think Before Coding → Design and UX Standards)
 
+**ข้อยกเว้น — plugin `pi-commit`:** script ที่รันบนเครื่อง dev (`plugins/pi-commit/scripts/`) เขียนด้วย POSIX `sh` แทน Python
+เพื่อไม่ต้องติดตั้ง Python (git hook รันผ่าน sh ที่มากับ git อยู่แล้ว ทั้ง Linux และ Git for Windows)
+และข้อความ error ของ hook เป็นภาษาอังกฤษตามที่ทีมเลือก · test ยังเป็น Python (`tests/test_pi_commit.py`)
+
 ---
 
 ## โครงสร้าง
@@ -82,6 +86,7 @@ mv plugins/<ชื่อ>/skills/my-skill plugins/<ชื่อ>/skills/<ชื�
 | `automation` | Automation scripts/flows |
 | `notification` | ส่งแจ้งเตือน |
 | `design-system` | ธีม / design token / UI convention |
+| `git` | git hook / commit convention |
 
 ---
 

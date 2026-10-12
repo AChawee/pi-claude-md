@@ -70,3 +70,4 @@ python3 scripts/install.py install <name> [<name> ...]
 1. รัน `/reload-plugins` หรือเปิด session ใหม่ แล้วพิมพ์ `/` จะเห็น skill เป็น `<plugin>:<skill>`
 2. เปิด auto-update: `/plugin` → แท็บ Marketplaces → `pi-claude-md` → Enable auto-update
 3. ถ้าเคย symlink skill เดิมไว้ใน `~/.claude/skills/` ให้ลบ symlink ของตัวที่เพิ่งติดตั้งออก ไม่งั้น skill จะขึ้นสองชุด
+4. ถ้าติดตั้ง `pi-commit` → หลัง reload ให้รัน `/pi-commit:setup` เพื่อกรอกรหัสพนักงาน (ไม่งั้น hook ยังไม่ทำงาน)

@@ -1,0 +1,16 @@
+
+# type(scope): description            scope is optional
+#
+# feat     new feature              fix       bug fix
+# perf     faster                   refactor  restructure, same behavior
+# docs     documentation            test      tests
+# style    formatting only          build     deps, Docker, build
+# ci       pipelines                chore     maintenance
+# security vulnerability fix        revert    undo a commit
+# etc      anything else
+#
+# e.g. feat(kpi): เพิ่มกราฟรายเดือน
+#      fix: แก้ปุ่มบันทึกกดไม่ได้
+#
+# Description: Thai or English, at least 10 characters.
+# A line with only deploy! still triggers the image build.

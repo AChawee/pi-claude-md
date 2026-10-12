@@ -13,6 +13,7 @@
 | [tyc-design-system](./plugins/tyc-design-system/skills/tyc-design-system/SKILL.md) | ใช้ design system กลางของ TYC (สี ปุ่ม ตาราง การ์ด dark/light) กับงาน UI | `design-system` `html` | ไม่ต้อง | Narawit |
 | [create-guide](./plugins/create-guide/skills/create-guide/SKILL.md) | สร้างคู่มือการใช้งาน HTML ไฟล์เดียว พร้อม auto-capture | `documentation` `guide` `html` `capture` `bilingual` | ไม่ต้อง | Narawit |
 | [ding](./plugins/ding/skills/ding/SKILL.md) | ส่งข้อความ markdown พร้อมไฟล์แนบเข้ากลุ่ม DingTalk | `notification` `automation` | ต้องกรอก `ding.env` | ken1lnw |
+| [pi-commit](./plugins/pi-commit/skills/commit/SKILL.md) | มาตรฐาน commit: user.name = รหัสพนักงาน + hook ตรวจ `type(scope): description` | `git` `automation` | ต้องรัน `/pi-commit:setup` | ken1lnw |
 
 ---
 
@@ -27,7 +28,8 @@
 | `capture` | create-guide |
 | `bilingual` | create-guide |
 | `notification` | ding |
-| `automation` | ding |
+| `automation` | ding, pi-commit |
+| `git` | pi-commit |
 
 ---
 

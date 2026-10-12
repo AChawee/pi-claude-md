@@ -1,0 +1,1111 @@
+<!doctype html>
+<html lang="th" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>pi-commit — มาตรฐาน commit ของทีม</title>
+<script>
+(function () {
+  var h = document.documentElement;
+  try {
+    var t = localStorage.getItem('pi-theme');
+    if (t !== 'dark' && t !== 'light') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    h.setAttribute('data-theme', t);
+    var l = localStorage.getItem('pi-commit-lang');
+    if (l === 'en' || l === 'th') h.setAttribute('lang', l);
+  } catch (e) {}
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-primary:#0172E5; --color-primary-hover:#015BB7; --color-primary-soft:#E7F1FD;
+  --color-secondary:#A5BBCB; --color-accent:#E81F76; --color-dark:#22242D;
+  --color-background:#F4F5F7; --color-surface:#FFFFFF;
+  --color-text-main:#1F2430; --color-text-muted:#6B7280;
+  --color-border:#E3E6EB; --color-surface-subtle:#FAFBFC; --color-surface-hover:#F3F4F6;
+  --color-success:#16A34A; --color-success-bg:#DCFCE7; --color-success-text:#166534; --color-success-border:#A8E5BE;
+  --color-warning:#D97706; --color-warning-bg:#FEF3C7; --color-warning-text:#92400E; --color-warning-border:#F6DFA1;
+  --color-danger:#DC2626; --color-danger-bg:#FEE2E2; --color-danger-text:#991B1B; --color-danger-border:#F5B8B8;
+  --color-accent-tint:#FDF1F7; --color-accent-text-strong:#A61558; --color-accent-border-soft:#F6C4DD;
+  --radius-sm:4px; --radius-md:6px; --radius-lg:10px; --radius-pill:999px;
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:24px; --space-6:32px;
+  --font-main:'Prompt','Inter',-apple-system,"Segoe UI",sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --shadow-sm:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.10);
+  --shadow-md:0 4px 12px rgba(16,24,40,.10);
+}
+:root[data-theme="dark"] {
+  --color-primary:#3987E5; --color-primary-hover:#5B9FEE; --color-primary-soft:#16283F;
+  --color-background:#14151A; --color-surface:#1C1E27;
+  --color-text-main:#EDEEF2; --color-text-muted:#9AA1AC; --color-border:#33353E;
+  --color-surface-subtle:#20222C; --color-surface-hover:#262932;
+  --color-success:#22C55E; --color-success-bg:#123422; --color-success-text:#86EFAC; --color-success-border:#1E5233;
+  --color-warning:#F59E0B; --color-warning-bg:#3A2A08; --color-warning-text:#FCD34D; --color-warning-border:#5C4410;
+  --color-danger:#F87171; --color-danger-bg:#3A1418; --color-danger-text:#FCA5A5; --color-danger-border:#5C2126;
+  --color-accent-tint:#2A1620; --color-accent-text-strong:#F6A8CC; --color-accent-border-soft:#4D2537;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.40),0 1px 3px rgba(0,0,0,.50);
+  --shadow-md:0 4px 14px rgba(0,0,0,.55);
+}
+
+*{box-sizing:border-box}
+html{scroll-padding-top:76px}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+html[lang="th"] .l-en,html[lang="en"] .l-th{display:none !important}
+body{
+  margin:0;font-family:var(--font-main);background:var(--color-background);
+  color:var(--color-text-main);line-height:1.7;-webkit-font-smoothing:antialiased;
+  overflow-wrap:break-word;
+}
+a{color:var(--color-primary);text-decoration:none}
+a:hover{text-decoration:underline}
+h1,h2,h3{line-height:1.35;font-weight:600;margin:0}
+p{margin:0 0 var(--space-3)}
+code,pre{font-family:var(--font-mono);font-variant-ligatures:none}
+code{font-size:.86em}
+:not(pre)>code{
+  background:var(--color-primary-soft);color:var(--color-primary-hover);
+  padding:.1em .4em;border-radius:var(--radius-sm);font-weight:500;overflow-wrap:anywhere;
+}
+:root[data-theme="dark"] :not(pre)>code{color:var(--color-text-main)}
+:focus-visible{outline:2px solid var(--color-primary);outline-offset:2px;border-radius:var(--radius-sm)}
+
+.topbar{
+  position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:var(--space-3);
+  height:56px;padding:0 var(--space-4);background:var(--color-surface);
+  border-bottom:1px solid var(--color-border);
+}
+.topbar .brand{font-weight:700;font-size:1rem;display:flex;align-items:center;gap:var(--space-2);color:var(--color-text-main)}
+.topbar .brand:hover{text-decoration:none}
+.topbar .mark{
+  width:28px;height:28px;border-radius:var(--radius-md);background:var(--color-primary);color:#fff;
+  display:grid;place-items:center;font-size:.8rem;font-weight:700;
+}
+.topbar .spacer{flex:1}
+.seg{display:inline-flex;border:1px solid var(--color-border);border-radius:var(--radius-pill);padding:2px;background:var(--color-surface-subtle)}
+.seg button{
+  font:inherit;font-size:.8rem;font-weight:500;line-height:1;cursor:pointer;border:0;background:transparent;
+  color:var(--color-text-muted);padding:.5em .85em;border-radius:var(--radius-pill);min-height:32px;
+}
+.seg button:hover{color:var(--color-text-main)}
+.seg button[aria-pressed="true"]{background:var(--color-primary);color:#fff}
+@media(max-width:480px){
+  .topbar{gap:var(--space-2);padding:0 var(--space-3)}
+  .topbar .brand .name{display:none}
+  .seg button{padding:.5em .65em}
+}
+
+.layout{
+  max-width:1120px;margin:0 auto;padding:var(--space-5) var(--space-4) var(--space-6);
+  display:grid;grid-template-columns:230px minmax(0,1fr);gap:var(--space-6);
+}
+@media(max-width:1000px){.layout{grid-template-columns:minmax(0,1fr);gap:var(--space-4)}}
+
+.toc{align-self:start}
+@media(min-width:1001px){.toc{position:sticky;top:76px}}
+.toc details{border:1px solid var(--color-border);border-radius:var(--radius-lg);background:var(--color-surface)}
+.toc summary{
+  cursor:pointer;font-weight:600;font-size:.9rem;padding:var(--space-3) var(--space-4);list-style:none;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.toc summary::-webkit-details-marker{display:none}
+.toc summary::after{content:"";width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);margin-top:-4px}
+.toc details[open] summary::after{transform:rotate(-135deg);margin-top:4px}
+.toc ol{list-style:none;margin:0;padding:0 var(--space-2) var(--space-2)}
+.toc a{
+  display:block;padding:.35em .75em;font-size:.88rem;color:var(--color-text-muted);
+  border-left:2px solid transparent;border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+}
+.toc a:hover{color:var(--color-text-main);background:var(--color-surface-hover);text-decoration:none}
+.toc a[aria-current="true"]{color:var(--color-primary);border-left-color:var(--color-primary);font-weight:600}
+:root[data-theme="dark"] .toc a[aria-current="true"]{color:var(--color-primary-hover)}
+@media(min-width:1001px){
+  .toc details{border:0;background:transparent}
+  .toc summary{display:none}
+  .toc ol{padding:0}
+}
+
+main{min-width:0}
+.intro{padding-bottom:var(--space-5);border-bottom:1px solid var(--color-border);margin-bottom:var(--space-6)}
+.intro h1{font-size:2rem;font-weight:700;letter-spacing:-.01em;margin-bottom:var(--space-3)}
+.intro .lede{max-width:68ch;font-size:1.05rem}
+.quick{list-style:none;margin:var(--space-5) 0 0;padding:0;display:grid;gap:var(--space-3);counter-reset:q}
+.quick li{
+  counter-increment:q;display:grid;grid-template-columns:32px minmax(0,1fr);gap:var(--space-3);align-items:start;
+  padding:var(--space-3) var(--space-4);background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);
+}
+.quick li::before{
+  content:counter(q);width:28px;height:28px;border-radius:var(--radius-pill);background:var(--color-primary);color:#fff;
+  display:grid;place-items:center;font-weight:600;font-size:.85rem;margin-top:.1em;
+}
+.quick b{display:block;font-weight:600}
+.quick span.d{color:var(--color-text-muted);font-size:.92rem}
+
+section.block{margin-bottom:var(--space-6);scroll-margin-top:76px}
+section.block>h2{font-size:1.5rem;margin-bottom:var(--space-3);padding-top:var(--space-2)}
+section.block h3{font-size:1.1rem;margin:var(--space-5) 0 var(--space-2)}
+.lead{color:var(--color-text-muted);max-width:68ch}
+main p,main li{max-width:72ch}
+main td p,main td li,main .callout p{max-width:none}
+
+.steps{list-style:none;margin:var(--space-4) 0;padding:0;counter-reset:s;position:relative}
+.steps>li{counter-increment:s;position:relative;padding:0 0 var(--space-4) 48px;max-width:none}
+.steps>li::before{
+  content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:var(--radius-pill);
+  background:var(--color-primary);color:#fff;display:grid;place-items:center;font-weight:600;font-size:.9rem;
+}
+.steps>li::after{content:"";position:absolute;left:15px;top:36px;bottom:4px;width:2px;background:var(--color-border)}
+.steps>li:last-child::after{display:none}
+.steps>li>b{display:block;font-weight:600}
+.steps p{margin:var(--space-1) 0 0;color:var(--color-text-muted);font-size:.95rem}
+
+.code{position:relative;margin:var(--space-3) 0}
+.code pre{
+  background:var(--color-dark);color:#E6E8EF;border-radius:var(--radius-md);padding:var(--space-4);
+  padding-right:92px;overflow-x:auto;font-family:var(--font-mono);font-size:.85rem;line-height:1.6;margin:0;
+  border:1px solid rgba(255,255,255,.08);
+}
+.code pre code{background:none;color:inherit;padding:0;font-size:inherit}
+.copy{
+  position:absolute;top:var(--space-2);right:var(--space-2);font:inherit;font-size:.75rem;font-weight:500;cursor:pointer;
+  background:#2E313C;color:#E6E8EF;border:1px solid #454852;border-radius:var(--radius-pill);padding:.35em .85em;line-height:1.3;
+}
+.copy:hover{background:#383B47}
+.copy:focus-visible{outline-color:#73B1F1}
+.copy.done{background:var(--color-success-bg);color:var(--color-success-text);border-color:var(--color-success-border)}
+.cap-label{font-size:.82rem;color:var(--color-text-muted);margin:var(--space-3) 0 0;font-weight:500}
+
+figure{margin:var(--space-4) 0}
+figure a.zoom{
+  display:block;border:1px solid var(--color-border);border-radius:var(--radius-md);overflow:hidden;
+  background:var(--color-dark);cursor:zoom-in;line-height:0;box-shadow:var(--shadow-sm);
+}
+figure img{width:100%;height:auto;display:block}
+figcaption{font-size:.88rem;color:var(--color-text-muted);margin-top:var(--space-2);max-width:72ch}
+figure+.code,figure+.cap-label{margin-top:var(--space-2)}
+dialog{
+  border:0;padding:0;background:transparent;max-width:96vw;max-height:96vh;overflow:visible;
+}
+dialog::backdrop{background:rgba(10,11,15,.8)}
+dialog .sc{max-width:96vw;max-height:86vh;overflow:auto;border-radius:var(--radius-md)}
+dialog img{display:block;max-width:none;width:max(96vw,900px);height:auto;background:var(--color-dark)}
+@media(min-width:1000px){dialog img{width:min(1400px,96vw)}}
+dialog .x{
+  display:block;margin:0 0 var(--space-2) auto;font:inherit;font-size:.85rem;cursor:pointer;
+  background:var(--color-surface);color:var(--color-text-main);border:1px solid var(--color-border);
+  border-radius:var(--radius-pill);padding:.4em 1em;
+}
+
+.tbl-wrap{overflow-x:auto;border:1px solid var(--color-border);border-radius:var(--radius-lg);margin:var(--space-3) 0;background:var(--color-surface)}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:520px}
+thead th{background:var(--color-primary);color:#fff;text-align:left;font-weight:600;padding:.7em .9em;white-space:nowrap}
+:root[data-theme="dark"] thead th{color:#0F1115}
+tbody th,tbody td{padding:.65em .9em;border-top:1px solid var(--color-border);vertical-align:top;text-align:left}
+tbody th{font-weight:400}
+tbody tr:nth-child(even){background:var(--color-surface-subtle)}
+td code,th code{white-space:pre-wrap}
+
+.badge{
+  display:inline-flex;align-items:center;gap:.4em;font-size:.75rem;font-weight:600;white-space:nowrap;
+  padding:.22em .65em;border-radius:var(--radius-pill);border:1px solid transparent;line-height:1.4;
+}
+.badge::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.badge-ok{background:var(--color-success-bg);color:var(--color-success-text);border-color:var(--color-success-border)}
+.badge-no{background:var(--color-danger-bg);color:var(--color-danger-text);border-color:var(--color-danger-border)}
+
+.callout{padding:var(--space-3) var(--space-4);border-radius:var(--radius-md);border:1px solid;margin:var(--space-4) 0;font-size:.93rem}
+.callout p:last-child{margin-bottom:0}
+.callout-info{background:var(--color-primary-soft);border-color:var(--color-primary);color:var(--color-primary-hover)}
+:root[data-theme="dark"] .callout-info{color:var(--color-text-main);border-color:var(--color-border)}
+.callout-warn{background:var(--color-warning-bg);border-color:var(--color-warning-border);color:var(--color-warning-text)}
+.callout-danger{background:var(--color-danger-bg);border-color:var(--color-danger-border);color:var(--color-danger-text)}
+.callout b{color:inherit}
+.callout :not(pre)>code{background:rgba(127,127,127,.18);color:inherit}
+
+.flow{
+  overflow-x:auto;border:1px solid var(--color-border);border-radius:var(--radius-lg);
+  background:var(--color-surface);padding:var(--space-3);margin:var(--space-3) 0;
+}
+.flow svg{display:block;width:100%;min-width:580px;max-width:720px;margin:0 auto;height:auto;color:var(--color-text-muted)}
+.flow text{font-family:var(--font-main);fill:var(--color-text-main);font-size:13px;text-anchor:middle}
+.flow .sm{font-size:11px}
+.flow .lbl{font-size:11px;fill:var(--color-text-muted);font-weight:500}
+.flow .mono{font-family:var(--font-mono);font-size:12px}
+.flow .ln{stroke:currentColor;stroke-width:1.6;fill:none}
+.flow .nd{fill:var(--color-surface);stroke:var(--color-border);stroke-width:1.5}
+.flow .dc{fill:var(--color-primary-soft);stroke:var(--color-primary);stroke-width:1.5}
+.flow .ok{fill:var(--color-success-bg);stroke:var(--color-success-border);stroke-width:1.5}
+.flow .ok-t{fill:var(--color-success-text)}
+.flow .bad{fill:var(--color-danger-bg);stroke:var(--color-danger-border);stroke-width:1.5}
+.flow .bad-t{fill:var(--color-danger-text)}
+.flow .wn{fill:var(--color-warning-bg);stroke:var(--color-warning-border);stroke-width:1.5}
+.flow .wn-t{fill:var(--color-warning-text)}
+:root[data-theme="dark"] .flow .dc-t{fill:var(--color-text-main)}
+.scroll-hint{display:none;font-size:.8rem;color:var(--color-text-muted);margin:0 0 var(--space-2)}
+@media(max-width:700px){.scroll-hint{display:block}}
+.flow-alt{margin:var(--space-2) 0 var(--space-4)}
+.flow-alt summary{cursor:pointer;font-size:.88rem;color:var(--color-primary);font-weight:500}
+.flow-alt ol{margin:var(--space-2) 0 0;padding-left:1.4em;font-size:.92rem}
+
+.anatomy{margin:var(--space-4) 0;font-family:var(--font-mono);font-size:1.15rem;display:flex;flex-wrap:wrap;align-items:flex-end}
+.anatomy .tx{padding:.15em .1em;border-bottom:3px solid var(--color-border);white-space:pre-wrap}
+.anatomy .tx.t{border-color:var(--color-primary)}
+.anatomy .tx.s{border-color:var(--color-accent)}
+.anatomy .tx.d{border-color:var(--color-success)}
+.anatomy .pl{padding:.15em .1em;border-bottom:3px solid transparent;white-space:pre}
+.legend{margin:0 0 var(--space-4);padding:0;display:grid;gap:var(--space-2);font-size:.92rem}
+.legend div{display:grid;grid-template-columns:14px minmax(0,1fr);gap:var(--space-3);align-items:start;max-width:72ch}
+.legend dt,.legend dd{margin:0}
+.legend .sw{width:14px;height:4px;border-radius:2px;margin-top:.8em;background:var(--color-border)}
+.legend .sw.t{background:var(--color-primary)}
+.legend .sw.s{background:var(--color-accent)}
+.legend .sw.d{background:var(--color-success)}
+
+.rules{margin:var(--space-3) 0;padding-left:1.3em}
+.rules li{margin-bottom:var(--space-2)}
+
+.faq details{border-top:1px solid var(--color-border)}
+.faq details:last-child{border-bottom:1px solid var(--color-border)}
+.faq summary{cursor:pointer;font-weight:500;padding:var(--space-3) 0;list-style:none;display:flex;justify-content:space-between;gap:var(--space-3);max-width:none}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";flex:0 0 auto;width:8px;height:8px;margin-top:.55em;border-right:2px solid var(--color-text-muted);border-bottom:2px solid var(--color-text-muted);transform:rotate(45deg)}
+.faq details[open] summary::after{transform:rotate(-135deg);margin-top:.8em}
+.faq .a{padding:0 0 var(--space-3);color:var(--color-text-main)}
+.faq .a p:last-child{margin-bottom:0}
+
+footer.foot{border-top:1px solid var(--color-border);padding:var(--space-5) var(--space-4);text-align:center;color:var(--color-text-muted);font-size:.85rem}
+
+@media(max-width:600px){
+  .intro h1{font-size:1.55rem}
+  section.block>h2{font-size:1.3rem}
+  .code pre{padding-right:var(--space-4);padding-top:44px}
+  .anatomy{font-size:.95rem}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="#top"><span class="mark" aria-hidden="true">PI</span><span class="name">pi-commit</span></a>
+  <span class="spacer"></span>
+  <div class="seg" role="group" aria-label="Language / ภาษา" id="langSeg">
+    <button type="button" data-lang="th" aria-pressed="true">ไทย</button>
+    <button type="button" data-lang="en" aria-pressed="false">EN</button>
+  </div>
+  <div class="seg" role="group" aria-label="Theme / ธีม" id="themeSeg">
+    <button type="button" data-theme-set="light" aria-pressed="true"><span class="l-th">สว่าง</span><span class="l-en">Light</span></button>
+    <button type="button" data-theme-set="dark" aria-pressed="false"><span class="l-th">มืด</span><span class="l-en">Dark</span></button>
+  </div>
+</header>
+
+<div class="layout">
+<nav class="toc" aria-label="Contents">
+  <details id="tocBox" open>
+    <summary><span class="l-th">สารบัญ</span><span class="l-en">Contents</span></summary>
+    <ol>
+      <li><a href="#how"><span class="l-th">ภาพรวมการทำงาน</span><span class="l-en">How it works</span></a></li>
+      <li><a href="#steps"><span class="l-th">ขั้นตอนทั้งหมด</span><span class="l-en">The whole process</span></a></li>
+      <li><a href="#install"><span class="l-th">ติดตั้ง</span><span class="l-en">Install</span></a></li>
+      <li><a href="#format"><span class="l-th">รูปแบบ commit</span><span class="l-en">Commit format</span></a></li>
+      <li><a href="#skill"><span class="l-th">commit ผ่าน Claude Code</span><span class="l-en">Commit with Claude Code</span></a></li>
+      <li><a href="#manual"><span class="l-th">commit แบบไม่ใช้ skill</span><span class="l-en">Commit without the skill</span></a></li>
+      <li><a href="#errors"><span class="l-th">ข้อความ error</span><span class="l-en">Error messages</span></a></li>
+      <li><a href="#faq"><span class="l-th">คำถามที่พบบ่อย</span><span class="l-en">FAQ</span></a></li>
+    </ol>
+  </details>
+</nav>
+
+<main id="top">
+
+<section class="intro" aria-labelledby="h-top">
+  <h1 id="h-top"><span class="l-th">pi-commit — มาตรฐาน commit ของทีม</span><span class="l-en">pi-commit — the team commit standard</span></h1>
+  <p class="lede l-th">ทุก commit ต้องบอกว่า <b>ใครทำ</b> (git <code>user.name</code> = รหัสพนักงาน 4 หลัก) และ <b>ทำอะไร</b> (<code>type(scope): description</code>) เพื่อให้ระบบ task ของทีมวิเคราะห์งานรายคนและรายโปรเจกต์ได้อัตโนมัติในภายหลัง ถ้า commit ไม่ตรงรูปแบบ hook จะปฏิเสธและบอกว่าต้องแก้อะไร</p>
+  <p class="lede l-en">Every commit says <b>who did it</b> (git <code>user.name</code> = your 4-digit employee code) and <b>what was done</b> (<code>type(scope): description</code>), so the team's task system can later analyse work per person and per project automatically. A hook refuses commits that do not follow the format and tells you what to fix.</p>
+
+  <ol class="quick" aria-label="Quick start">
+    <li><div>
+      <b><span class="l-th">ติดตั้ง plugin</span><span class="l-en">Install the plugin</span></b>
+      <span class="d"><code>/plugin marketplace add ken1lnw/pi-claude-md</code> <span class="l-th">แล้ว</span><span class="l-en">then</span> <code>/plugin install pi-commit@pi-claude-md</code> <span class="l-th">(ขั้นตอนเต็มอยู่ในหัวข้อติดตั้ง)</span><span class="l-en">(full steps in the Install section)</span></span>
+    </div></li>
+    <li><div>
+      <b><span class="l-th">ตั้งรหัสพนักงาน</span><span class="l-en">Set your employee code</span></b>
+      <span class="d"><code>/pi-commit:setup</code> <span class="l-th">แล้วใส่รหัส 4 หลัก</span><span class="l-en">then enter your 4-digit code</span></span>
+    </div></li>
+    <li><div>
+      <b><span class="l-th">commit ตามปกติ</span><span class="l-en">Commit as usual</span></b>
+      <span class="d"><span class="l-th">ใช้ <code>git commit</code>, VS Code หรือสั่ง</span><span class="l-en">Use <code>git commit</code>, VS Code, or run</span> <code>/pi-commit:commit</code></span>
+    </div></li>
+  </ol>
+</section>
+
+<section class="block" id="how" aria-labelledby="h-how">
+  <h2 id="h-how"><span class="l-th">ภาพรวมการทำงาน</span><span class="l-en">How it works</span></h2>
+  <p class="lead l-th">ไม่ว่าจะ commit ทางไหน git จะรัน hook <code>commit-msg</code> ก่อนบันทึกทุกครั้ง hook ตรวจตามลำดับด้านล่าง</p>
+  <p class="lead l-en">Whichever way you commit, git runs the <code>commit-msg</code> hook before saving. The hook checks in the order below.</p>
+
+  <p class="scroll-hint"><span class="l-th">เลื่อนผังไปทางซ้าย-ขวาเพื่อดูทั้งหมด</span><span class="l-en">Scroll the chart sideways to see all of it.</span></p>
+  <div class="flow">
+<svg viewBox="0 0 700 750" role="img" aria-labelledby="f1t f1d">
+  <title id="f1t">pi-commit commit check flow</title>
+  <desc id="f1d">Developer changes code and commits from Claude Code, VS Code or the terminal. The commit-msg hook checks the remote, exemptions, the 4-digit user.name and the message format. Failing either name or format rejects the commit and the developer fixes and commits again. Otherwise the commit is saved and the developer pushes.</desc>
+  <defs>
+    <marker id="ah1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="currentColor"/></marker>
+  </defs>
+  <rect class="nd" x="260" y="10" width="200" height="40" rx="8"/>
+  <text x="360" y="35" class="l-th">แก้โค้ด</text><text x="360" y="35" class="l-en">Change code</text>
+
+  <path class="ln" d="M360 50V65"/>
+  <path class="ln" d="M130 65H590"/>
+  <path class="ln" d="M130 65V78" marker-end="url(#ah1)"/>
+  <path class="ln" d="M360 65V78" marker-end="url(#ah1)"/>
+  <path class="ln" d="M590 65V78" marker-end="url(#ah1)"/>
+
+  <rect class="nd" x="30" y="80" width="200" height="50" rx="8"/>
+  <text x="130" y="101">Claude Code</text><text x="130" y="119" class="mono">/pi-commit:commit</text>
+  <rect class="nd" x="260" y="80" width="200" height="50" rx="8"/>
+  <text x="360" y="101">VS Code</text><text x="360" y="119" class="l-th">ช่อง Source Control</text><text x="360" y="119" class="l-en">Source Control panel</text>
+  <rect class="nd" x="490" y="80" width="200" height="50" rx="8"/>
+  <text x="590" y="101">Terminal</text><text x="590" y="119" class="mono">git commit</text>
+
+  <path class="ln" d="M130 130V145H360"/>
+  <path class="ln" d="M590 130V145H360"/>
+  <path class="ln" d="M360 130V157" marker-end="url(#ah1)"/>
+
+  <rect class="nd" x="260" y="160" width="200" height="40" rx="8"/>
+  <text x="360" y="185" class="l-th">git รัน hook commit-msg</text><text x="360" y="185" class="l-en">git runs commit-msg hook</text>
+  <path class="ln" d="M360 200V223" marker-end="url(#ah1)"/>
+
+  <polygon class="dc" points="360,225 500,263 360,301 220,263"/>
+  <text x="360" y="259" class="dc-t l-th">remote อยู่ใต้</text><text x="360" y="276" class="dc-t l-th">tycthailand ?</text>
+  <text x="360" y="259" class="dc-t l-en">Remote is under</text><text x="360" y="276" class="dc-t l-en">tycthailand?</text>
+  <path class="ln" d="M500 263H528" marker-end="url(#ah1)"/>
+  <text x="514" y="254" class="lbl l-th">ไม่ใช่</text><text x="514" y="254" class="lbl l-en">No</text>
+  <rect class="ok" x="530" y="238" width="160" height="50" rx="8"/>
+  <text x="610" y="259" class="ok-t l-th">ไม่ตรวจ</text><text x="610" y="276" class="ok-t l-th">commit สำเร็จ</text>
+  <text x="610" y="259" class="ok-t l-en">Not checked</text><text x="610" y="276" class="ok-t l-en">commit saved</text>
+  <path class="ln" d="M360 301V323" marker-end="url(#ah1)"/>
+  <text x="372" y="317" class="lbl l-th" style="text-anchor:start">ใช่</text><text x="372" y="317" class="lbl l-en" style="text-anchor:start">Yes</text>
+
+  <polygon class="dc" points="360,325 500,363 360,401 220,363"/>
+  <text x="360" y="357" class="dc-t l-th">ได้รับยกเว้น ?</text><text x="360" y="357" class="dc-t l-en">Exempt?</text>
+  <text x="360" y="374" class="dc-t sm">deploy! Merge Revert fixup!</text>
+  <path class="ln" d="M500 363H528" marker-end="url(#ah1)"/>
+  <text x="514" y="354" class="lbl l-th">ใช่</text><text x="514" y="354" class="lbl l-en">Yes</text>
+  <rect class="ok" x="530" y="338" width="160" height="50" rx="8"/>
+  <text x="610" y="359" class="ok-t l-th">ไม่ตรวจ</text><text x="610" y="376" class="ok-t l-th">commit สำเร็จ</text>
+  <text x="610" y="359" class="ok-t l-en">Not checked</text><text x="610" y="376" class="ok-t l-en">commit saved</text>
+  <path class="ln" d="M360 401V423" marker-end="url(#ah1)"/>
+  <text x="372" y="417" class="lbl l-th" style="text-anchor:start">ไม่ใช่</text><text x="372" y="417" class="lbl l-en" style="text-anchor:start">No</text>
+
+  <polygon class="dc" points="360,425 500,463 360,501 220,463"/>
+  <text x="360" y="459" class="dc-t l-th">git user.name เป็น</text><text x="360" y="476" class="dc-t l-th">เลข 4 หลักไหม ?</text>
+  <text x="360" y="459" class="dc-t l-en">git user.name is</text><text x="360" y="476" class="dc-t l-en">exactly 4 digits?</text>
+  <path class="ln" d="M220 463H182" marker-end="url(#ah1)"/>
+  <text x="201" y="454" class="lbl l-th">ไม่ใช่</text><text x="201" y="454" class="lbl l-en">No</text>
+  <path class="ln" d="M360 501V523" marker-end="url(#ah1)"/>
+  <text x="372" y="517" class="lbl l-th" style="text-anchor:start">ใช่</text><text x="372" y="517" class="lbl l-en" style="text-anchor:start">Yes</text>
+
+  <polygon class="dc" points="360,525 500,563 360,601 220,563"/>
+  <text x="360" y="559" class="dc-t l-th">บรรทัดแรกถูกรูปแบบ</text><text x="360" y="576" class="dc-t l-th">และ ≥ 10 ตัวอักษร ?</text>
+  <text x="360" y="559" class="dc-t l-en">First line valid and</text><text x="360" y="576" class="dc-t l-en">description ≥ 10 chars?</text>
+  <path class="ln" d="M220 563H182" marker-end="url(#ah1)"/>
+  <text x="201" y="554" class="lbl l-th">ไม่ใช่</text><text x="201" y="554" class="lbl l-en">No</text>
+  <path class="ln" d="M360 601V623" marker-end="url(#ah1)"/>
+  <text x="372" y="617" class="lbl l-th" style="text-anchor:start">ใช่</text><text x="372" y="617" class="lbl l-en" style="text-anchor:start">Yes</text>
+
+  <rect class="bad" x="30" y="440" width="150" height="145" rx="8"/>
+  <text x="105" y="500" class="bad-t l-th" style="font-weight:600">ปฏิเสธ commit</text><text x="105" y="520" class="bad-t l-th">แสดง Problem</text><text x="105" y="538" class="bad-t l-th">และ Example</text>
+  <text x="105" y="500" class="bad-t l-en" style="font-weight:600">Commit rejected</text><text x="105" y="520" class="bad-t l-en">Shows Problem</text><text x="105" y="538" class="bad-t l-en">and Example</text>
+  <path class="ln" d="M30 512H8V30H257" marker-end="url(#ah1)"/>
+  <text transform="translate(24 300) rotate(-90)" class="lbl l-th">แก้ข้อความแล้ว commit ใหม่</text>
+  <text transform="translate(24 300) rotate(-90)" class="lbl l-en">Fix the message, commit again</text>
+
+  <rect class="ok" x="250" y="625" width="220" height="46" rx="8"/>
+  <text x="360" y="646" class="ok-t l-th" style="font-weight:600">commit สำเร็จ</text><text x="360" y="662" class="ok-t sm l-th">author = รหัสพนักงาน</text>
+  <text x="360" y="646" class="ok-t l-en" style="font-weight:600">Commit saved</text><text x="360" y="662" class="ok-t sm l-en">author = employee code</text>
+  <path class="ln" d="M360 671V693" marker-end="url(#ah1)"/>
+  <rect class="nd" x="260" y="695" width="200" height="40" rx="8"/>
+  <text x="360" y="720" class="l-th">คุณ push เอง</text><text x="360" y="720" class="l-en">You push yourself</text>
+</svg>
+  </div>
+
+  <details class="flow-alt">
+    <summary><span class="l-th">อ่านผังเป็นข้อความ</span><span class="l-en">Read the flowchart as text</span></summary>
+    <ol class="l-th">
+      <li>แก้โค้ด แล้ว commit ผ่าน Claude Code (<code>/pi-commit:commit</code>), ช่อง Source Control ของ VS Code หรือ <code>git commit</code> ใน terminal</li>
+      <li>git รัน hook <code>commit-msg</code></li>
+      <li>remote ไม่อยู่ใต้ <code>tycthailand</code> หรือไม่ → ไม่ตรวจ commit สำเร็จ</li>
+      <li>เป็น commit ที่ได้รับยกเว้น (<code>deploy!</code> ล้วน, Merge, Revert, fixup!/squash!/amend!) หรือไม่ → ไม่ตรวจ commit สำเร็จ</li>
+      <li><code>user.name</code> เป็นเลข 4 หลักพอดีหรือไม่ → ถ้าไม่ใช่ commit ถูกปฏิเสธ</li>
+      <li>บรรทัดแรกเป็น <code>type(scope): description</code> ที่ type ถูกต้องและ description ≥ 10 ตัวอักษร ไม่คลุมเครือหรือไม่ → ถ้าไม่ใช่ commit ถูกปฏิเสธ</li>
+      <li>ถูกปฏิเสธ: อ่าน <code>Problem</code> และ <code>Example</code> แก้ข้อความ แล้ว commit ใหม่ (กลับไปข้อ 1)</li>
+      <li>ผ่านทั้งหมด: commit สำเร็จ author เป็นรหัสพนักงาน แล้วคุณ push เอง</li>
+    </ol>
+    <ol class="l-en">
+      <li>Change code, then commit via Claude Code (<code>/pi-commit:commit</code>), the VS Code Source Control panel, or <code>git commit</code> in a terminal.</li>
+      <li>git runs the <code>commit-msg</code> hook.</li>
+      <li>Is the remote under <code>tycthailand</code>? If not, nothing is checked and the commit is saved.</li>
+      <li>Is it exempt (only <code>deploy!</code>, Merge, Revert, fixup!/squash!/amend!)? If yes, nothing is checked and the commit is saved.</li>
+      <li>Is <code>user.name</code> exactly 4 digits? If not, the commit is rejected.</li>
+      <li>Is the first line <code>type(scope): description</code> with a known type and a description of at least 10 characters that is not vague? If not, the commit is rejected.</li>
+      <li>Rejected: read <code>Problem</code> and <code>Example</code>, fix the message and commit again (back to step 1).</li>
+      <li>All passed: the commit is saved with the employee code as author, and you push yourself.</li>
+    </ol>
+  </details>
+
+  <div class="callout callout-info">
+    <p class="l-th"><b>Claude Code ข้าม hook ไม่ได้</b> — plugin บล็อกคำสั่งที่มี <code>--no-verify</code>, <code>-n</code> หรือแก้ <code>core.hooksPath</code> ถ้าถูกบล็อกให้แก้ข้อความ commit ให้ถูกรูปแบบแล้ว commit ตามปกติ</p>
+    <p class="l-en"><b>Claude Code cannot bypass the hook.</b> The plugin blocks commands that use <code>--no-verify</code>, <code>-n</code> or change <code>core.hooksPath</code>. If blocked, fix the commit message and commit normally.</p>
+  </div>
+
+  <h3><span class="l-th">ผังการติดตั้ง (setup)</span><span class="l-en">Setup flow</span></h3>
+  <p class="scroll-hint"><span class="l-th">เลื่อนผังไปทางซ้าย-ขวาเพื่อดูทั้งหมด</span><span class="l-en">Scroll the chart sideways to see all of it.</span></p>
+  <div class="flow">
+<svg viewBox="0 0 700 580" role="img" aria-labelledby="f2t f2d">
+  <title id="f2t">pi-commit setup flow</title>
+  <desc id="f2d">Run the setup command, enter a 4-digit employee code and retry if invalid, confirm, then setup stops without changes if core.hooksPath is already set by another tool; otherwise it sets user.name, core.hooksPath and commit.template and finishes.</desc>
+  <defs>
+    <marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="currentColor"/></marker>
+  </defs>
+  <rect class="nd" x="150" y="10" width="300" height="52" rx="8"/>
+  <text x="300" y="32" class="mono">/pi-commit:setup</text>
+  <text x="300" y="50" class="sm l-th">หรือ sh plugins/pi-commit/scripts/setup.sh install</text><text x="300" y="50" class="sm l-en">or sh plugins/pi-commit/scripts/setup.sh install</text>
+  <path class="ln" d="M300 62V84" marker-end="url(#ah2)"/>
+
+  <rect class="nd" x="170" y="86" width="260" height="40" rx="8"/>
+  <text x="300" y="111" class="l-th">ใส่รหัสพนักงาน 4 หลัก</text><text x="300" y="111" class="l-en">Enter the 4-digit employee code</text>
+  <path class="ln" d="M300 126V148" marker-end="url(#ah2)"/>
+
+  <polygon class="dc" points="300,150 420,188 300,226 180,188"/>
+  <text x="300" y="193" class="dc-t l-th">เป็นเลข 4 หลักไหม ?</text><text x="300" y="193" class="dc-t l-en">Exactly 4 digits?</text>
+  <path class="ln" d="M420 188H480V106H432" marker-end="url(#ah2)"/>
+  <text x="428" y="205" class="lbl l-th" style="text-anchor:start">ไม่ใช่ ลองใหม่</text><text x="428" y="205" class="lbl l-en" style="text-anchor:start">No, retry</text>
+  <path class="ln" d="M300 226V252" marker-end="url(#ah2)"/>
+  <text x="312" y="244" class="lbl l-th" style="text-anchor:start">ใช่</text><text x="312" y="244" class="lbl l-en" style="text-anchor:start">Yes</text>
+
+  <rect class="nd" x="170" y="254" width="260" height="40" rx="8"/>
+  <text x="300" y="279" class="l-th">ยืนยัน Apply? [Y/n]</text><text x="300" y="279" class="l-en">Confirm Apply? [Y/n]</text>
+  <path class="ln" d="M300 294V318" marker-end="url(#ah2)"/>
+
+  <polygon class="dc" points="300,320 440,358 300,396 160,358"/>
+  <text x="300" y="353" class="dc-t l-th">core.hooksPath ถูกตั้ง</text><text x="300" y="370" class="dc-t l-th">โดยเครื่องมืออื่นแล้ว ?</text>
+  <text x="300" y="353" class="dc-t l-en">core.hooksPath already</text><text x="300" y="370" class="dc-t l-en">set by another tool?</text>
+  <path class="ln" d="M440 358H488" marker-end="url(#ah2)"/>
+  <text x="464" y="349" class="lbl l-th">ใช่</text><text x="464" y="349" class="lbl l-en">Yes</text>
+  <rect class="wn" x="490" y="322" width="200" height="72" rx="8"/>
+  <text x="590" y="347" class="wn-t l-th" style="font-weight:600">หยุด ไม่แก้อะไร</text><text x="590" y="366" class="wn-t sm l-th">แจ้งวิธีทำต่อ</text><text x="590" y="381" class="wn-t sm l-th">คุณตัดสินใจเอง</text>
+  <text x="590" y="347" class="wn-t l-en" style="font-weight:600">Stops, changes nothing</text><text x="590" y="366" class="wn-t sm l-en">Tells you how to proceed;</text><text x="590" y="381" class="wn-t sm l-en">your call</text>
+  <path class="ln" d="M300 396V424" marker-end="url(#ah2)"/>
+  <text x="312" y="414" class="lbl l-th" style="text-anchor:start">ไม่ใช่</text><text x="312" y="414" class="lbl l-en" style="text-anchor:start">No</text>
+
+  <rect class="nd" x="130" y="426" width="340" height="82" rx="8"/>
+  <text x="300" y="450" class="l-th" style="font-weight:600">ตั้งค่า git ระดับ global</text><text x="300" y="450" class="l-en" style="font-weight:600">Sets global git config</text>
+  <text x="300" y="473" class="mono">user.name = 1234</text>
+  <text x="300" y="490" class="mono">core.hooksPath, commit.template</text>
+  <path class="ln" d="M300 508V528" marker-end="url(#ah2)"/>
+  <rect class="ok" x="200" y="530" width="200" height="40" rx="8"/>
+  <text x="300" y="555" class="ok-t l-th" style="font-weight:600">เสร็จ</text><text x="300" y="555" class="ok-t l-en" style="font-weight:600">Done</text>
+</svg>
+  </div>
+  <details class="flow-alt">
+    <summary><span class="l-th">อ่านผังเป็นข้อความ</span><span class="l-en">Read the flowchart as text</span></summary>
+    <ol class="l-th">
+      <li>รัน <code>/pi-commit:setup</code> หรือ <code>sh plugins/pi-commit/scripts/setup.sh install</code></li>
+      <li>ใส่รหัสพนักงาน 4 หลัก ถ้าไม่ใช่เลข 4 หลักจะถามใหม่</li>
+      <li>ยืนยัน <code>Apply? [Y/n]</code></li>
+      <li>ถ้า <code>core.hooksPath</code> ถูกตั้งโดยเครื่องมืออื่นอยู่แล้ว setup จะหยุด ไม่เปลี่ยนอะไร และบอกวิธีทำต่อ</li>
+      <li>ไม่เช่นนั้นตั้ง <code>user.name</code>, <code>core.hooksPath</code> (<code>~/.config/pi-claude-md/git-hooks</code>) และ <code>commit.template</code> แล้วเสร็จ</li>
+    </ol>
+    <ol class="l-en">
+      <li>Run <code>/pi-commit:setup</code> or <code>sh plugins/pi-commit/scripts/setup.sh install</code>.</li>
+      <li>Enter your 4-digit employee code; if it is not exactly 4 digits you are asked again.</li>
+      <li>Confirm <code>Apply? [Y/n]</code>.</li>
+      <li>If <code>core.hooksPath</code> is already set by another tool, setup stops, changes nothing and tells you how to proceed.</li>
+      <li>Otherwise it sets <code>user.name</code>, <code>core.hooksPath</code> (<code>~/.config/pi-claude-md/git-hooks</code>) and <code>commit.template</code>, then finishes.</li>
+    </ol>
+  </details>
+</section>
+
+<section class="block" id="steps" aria-labelledby="h-steps">
+  <h2 id="h-steps"><span class="l-th">ขั้นตอนทั้งหมด</span><span class="l-en">The whole process</span></h2>
+  <ol class="steps">
+    <li>
+      <b><span class="l-th">ติดตั้ง plugin</span><span class="l-en">Install the plugin</span></b>
+      <p><span class="l-th">ทำครั้งเดียวต่อเครื่อง</span><span class="l-en">Once per machine.</span></p>
+    </li>
+    <li>
+      <b><span class="l-th">ตั้งรหัสพนักงาน</span><span class="l-en">Set your employee code</span></b>
+      <p><span class="l-th">ทำครั้งเดียว รหัสจะกลายเป็นชื่อผู้ commit ของคุณ</span><span class="l-en">Once. The code becomes your commit author name.</span></p>
+    </li>
+    <li>
+      <b><span class="l-th">ทำงานและ commit</span><span class="l-en">Work and commit</span></b>
+      <p><span class="l-th">ทุกครั้ง ผ่าน Claude Code, VS Code หรือ terminal ก็ได้</span><span class="l-en">Every time, through Claude Code, VS Code or a terminal.</span></p>
+    </li>
+    <li>
+      <b><span class="l-th">ถ้าถูกปฏิเสธ อ่าน <code>Problem</code> แก้ แล้ว commit ใหม่</span><span class="l-en">If rejected, read <code>Problem</code>, fix, commit again</span></b>
+      <p><span class="l-th">ข้อความมีตัวอย่าง <code>Example</code> ให้ดู</span><span class="l-en">The message includes an <code>Example</code> to copy from.</span></p>
+    </li>
+    <li>
+      <b><span class="l-th">push เอง</span><span class="l-en">Push yourself</span></b>
+      <p><span class="l-th">ไม่มีอะไร push ให้ บรรทัด <code>deploy!</code> ยังสั่ง build image เหมือนเดิม</span><span class="l-en">Nothing pushes for you. A <code>deploy!</code> line still triggers the image build as before.</span></p>
+    </li>
+  </ol>
+</section>
+
+<section class="block" id="install" aria-labelledby="h-install">
+  <h2 id="h-install"><span class="l-th">ติดตั้ง</span><span class="l-en">Install</span></h2>
+  <p class="lead l-th">ใช้เวลาไม่ถึง 5 นาที เลือกวิธี A ถ้าใช้ Claude Code หรือวิธี B ถ้าไม่ใช้</p>
+  <p class="lead l-en">Takes under 5 minutes. Pick A if you use Claude Code, or B if you do not.</p>
+
+  <h3><span class="l-th">A. ใช้ Claude Code (แนะนำ)</span><span class="l-en">A. With Claude Code (recommended)</span></h3>
+  <p class="l-th">พิมพ์ทีละบรรทัดใน Claude Code Claude จะถามรหัส 4 หลักแล้วรัน setup ให้</p>
+  <p class="l-en">Type these one at a time in Claude Code. Claude asks for the 4-digit code and runs the setup.</p>
+  <div class="code"><pre><code>/plugin marketplace add ken1lnw/pi-claude-md
+/plugin install pi-commit@pi-claude-md
+/reload-plugins
+/pi-commit:setup</code></pre></div>
+  <p class="l-th">อีกทางหนึ่ง: ถ้า clone repo ไว้แล้วให้รัน <code>/install-skills</code> เลือก pi-commit แล้วรัน <code>/pi-commit:setup</code></p>
+  <p class="l-en">Alternative: if you already cloned the repo, run <code>/install-skills</code>, pick pi-commit, then run <code>/pi-commit:setup</code>.</p>
+
+  <h3><span class="l-th">B. ไม่ใช้ Claude Code (terminal)</span><span class="l-en">B. Without Claude Code (terminal)</span></h3>
+  <p class="l-th">บน Windows ให้ใช้ Git Bash ซึ่งมากับ Git for Windows ต้องมีแค่ git ไม่ต้องมี Python</p>
+  <p class="l-en">On Windows use Git Bash, which comes with Git for Windows. Only git is needed, no Python.</p>
+  <div class="code"><pre><code>git clone https://github.com/ken1lnw/pi-claude-md.git
+cd pi-claude-md
+sh plugins/pi-commit/scripts/setup.sh install</code></pre></div>
+
+  <figure>
+    <a class="zoom" href="pi-commit-guide/setup-terminal.png"><img loading="lazy" width="1400" height="420" src="pi-commit-guide/setup-terminal.png" alt="" data-alt-th="ผลของ setup.sh install: ใส่ 12a4 ถูกปฏิเสธ ใส่ 1234 แล้วเปลี่ยนชื่อ git จาก dev เป็น 1234 และตั้ง hook กับ template" data-alt-en="Output of setup.sh install: 12a4 is rejected, 1234 is accepted, git name changes from dev to 1234 and the hook and template are set"></a>
+    <figcaption><span class="l-th">รหัสที่ไม่ใช่เลข 4 หลักจะถูกถามใหม่ ก่อนยืนยันจะเห็นชื่อเดิมและชื่อใหม่ (คลิกที่ภาพเพื่อขยาย)</span><span class="l-en">A code that is not 4 digits is asked for again. Before you confirm you see the old and new name (click the image to enlarge).</span></figcaption>
+  </figure>
+  <p class="cap-label"><span class="l-th">ข้อความจริงจากภาพ (คัดลอกได้)</span><span class="l-en">Real output from the screenshot (copyable)</span></p>
+  <div class="code"><pre><code>~/pi-claude-md $ sh plugins/pi-commit/scripts/setup.sh install
+Employee code (4 digits): 12a4
+Must be exactly 4 digits, e.g. 1234. Try again.
+Employee code (4 digits): 1234
+
+Current git name : dev
+New git name     : 1234
+Apply? [Y/n]
+
+pi-commit installed
+  git user.name     -&gt; 1234
+  commit-msg hook   -&gt; ~/.config/pi-claude-md/git-hooks
+  commit.template   -&gt; ~/.config/pi-claude-md/git-hooks/commit-template.txt
+
+Commit as usual, or use /pi-commit:commit in Claude Code.</code></pre></div>
+
+  <h3><span class="l-th">ตรวจว่าติดตั้งแล้ว</span><span class="l-en">Check it</span></h3>
+  <div class="code"><pre><code>sh plugins/pi-commit/scripts/setup.sh status</code></pre></div>
+  <p class="cap-label"><span class="l-th">ผลที่ควรเห็น</span><span class="l-en">Expected output</span></p>
+  <div class="code"><pre><code>git user.name   : 1234
+core.hooksPath  : ~/.config/pi-claude-md/git-hooks
+commit-msg hook : installed
+OK</code></pre></div>
+
+  <h3><span class="l-th">ควรรู้</span><span class="l-en">Good to know</span></h3>
+  <ul class="rules">
+    <li><span class="l-th">อีเมลและชื่อ/โปรไฟล์ GitHub ของคุณไม่ถูกแตะต้อง</span><span class="l-en">Your email and GitHub username/profile are not touched.</span></li>
+    <li><span class="l-th"><code>user.name</code> เป็นค่า global ดังนั้น repo ส่วนตัวก็จะแสดงรหัสพนักงานด้วย แต่รูปแบบ commit บังคับเฉพาะ repo ใต้ <code>tycthailand</code></span><span class="l-en"><code>user.name</code> is global, so personal repos also show the code, but the format is only enforced in <code>tycthailand</code> repos.</span></li>
+    <li><span class="l-th">หลังอัปเดต plugin ให้รัน <code>/pi-commit:setup</code> อีกครั้ง (รหัสเดิม) เพื่อคัดลอก hook ตัวใหม่</span><span class="l-en">After updating the plugin run <code>/pi-commit:setup</code> again (same code) to copy the new hook.</span></li>
+    <li><span class="l-th">ถอนการติดตั้ง: ใช้คำสั่งด้านล่าง ระบบจะคืนค่า <code>user.name</code> เดิมให้</span><span class="l-en">Uninstall with the command below. Your previous <code>user.name</code> is restored.</span></li>
+  </ul>
+  <div class="code"><pre><code>sh plugins/pi-commit/scripts/setup.sh uninstall</code></pre></div>
+</section>
+
+<section class="block" id="format" aria-labelledby="h-format">
+  <h2 id="h-format"><span class="l-th">รูปแบบ commit</span><span class="l-en">Commit format</span></h2>
+  <p class="lead l-th">บรรทัดแรกของข้อความ commit ต้องเป็น <code>type(scope): description</code> บรรทัดถัดไป (body) จะเขียนหรือไม่ก็ได้</p>
+  <p class="lead l-en">The first line of the commit message must be <code>type(scope): description</code>. A body below it is optional.</p>
+
+  <div class="anatomy" role="img" aria-label="feat(kpi): เพิ่มกราฟรายเดือน"><span class="tx t">feat</span><span class="tx s">(kpi)</span><span class="pl">: </span><span class="tx d">เพิ่มกราฟรายเดือน</span></div>
+  <dl class="legend">
+    <div><dt class="sw t"></dt><dd><b>type</b> — <span class="l-th">ประเภทงาน</span><span class="l-en">the kind of work</span></dd></div>
+    <div><dt class="sw s"></dt><dd><b>scope</b> — <span class="l-th">ส่วนของระบบที่แก้ (ไม่ใส่ก็ได้ และถ้าไม่ใส่ให้ตัดวงเล็บออกด้วย)</span><span class="l-en">the area changed (optional; leave out the parentheses too if you skip it)</span></dd></div>
+    <div><dt class="sw d"></dt><dd><b>description</b> — <span class="l-th">ทำอะไร</span><span class="l-en">what was done</span></dd></div>
+  </dl>
+
+  <h3><span class="l-th">กฎ</span><span class="l-en">Rules</span></h3>
+  <ul class="rules">
+    <li><span class="l-th"><b>type</b> เป็นตัวพิมพ์เล็ก และต้องอยู่ในรายการด้านล่าง</span><span class="l-en"><b>type</b> is lowercase and from the list below.</span></li>
+    <li><span class="l-th"><b>scope</b> คือส่วนของระบบที่คุณแก้ เป็นคำภาษาอังกฤษพิมพ์เล็ก 1 คำ เช่น <code>auth</code>, <code>kpi</code>, <code>tasks</code>, <code>api</code>, <code>db</code>, <code>ui</code> ห้ามใช้ชื่อ task, รหัส task หรือชื่อคน</span><span class="l-en"><b>scope</b> is the part of the system you changed: one lowercase English word such as <code>auth</code>, <code>kpi</code>, <code>tasks</code>, <code>api</code>, <code>db</code>, <code>ui</code>. Not a task name or ID, and not a person.</span></li>
+    <li><span class="l-th">หลังเครื่องหมาย <code>:</code> เว้นวรรค <b>1 ช่องพอดี</b></span><span class="l-en">Exactly <b>one space</b> after the <code>:</code>.</span></li>
+    <li><span class="l-th"><b>description</b> เป็นภาษาไทยหรืออังกฤษก็ได้ ยาวอย่างน้อย 10 ตัวอักษร และบอกว่าเปลี่ยนอะไร ไม่ใช่ &quot;update code&quot; หรือ &quot;minor changes&quot;</span><span class="l-en"><b>description</b> is Thai or English, at least 10 characters, and says what changed, not &quot;update code&quot; or &quot;minor changes&quot;.</span></li>
+  </ul>
+
+  <h3><span class="l-th">รายการ type</span><span class="l-en">Types</span></h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th scope="col">type</th><th scope="col"><span class="l-th">ใช้เมื่อ</span><span class="l-en">Use for</span></th></tr></thead>
+      <tbody>
+        <tr><th scope="row"><code>feat</code></th><td><span class="l-th">เพิ่มความสามารถใหม่</span><span class="l-en">new feature</span></td></tr>
+        <tr><th scope="row"><code>fix</code></th><td><span class="l-th">แก้บั๊ก</span><span class="l-en">bug fix</span></td></tr>
+        <tr><th scope="row"><code>perf</code></th><td><span class="l-th">ทำให้เร็วขึ้น</span><span class="l-en">performance</span></td></tr>
+        <tr><th scope="row"><code>refactor</code></th><td><span class="l-th">ปรับโครงโค้ด พฤติกรรมเหมือนเดิม</span><span class="l-en">restructure, same behavior</span></td></tr>
+        <tr><th scope="row"><code>docs</code></th><td><span class="l-th">เอกสาร</span><span class="l-en">documentation</span></td></tr>
+        <tr><th scope="row"><code>test</code></th><td><span class="l-th">เทส</span><span class="l-en">tests</span></td></tr>
+        <tr><th scope="row"><code>style</code></th><td><span class="l-th">จัด format ไม่เปลี่ยน logic</span><span class="l-en">formatting only</span></td></tr>
+        <tr><th scope="row"><code>build</code></th><td><span class="l-th">dependency, Dockerfile, การ build</span><span class="l-en">deps, Docker, build</span></td></tr>
+        <tr><th scope="row"><code>ci</code></th><td><span class="l-th">GitHub Actions</span><span class="l-en">pipeline</span></td></tr>
+        <tr><th scope="row"><code>chore</code></th><td><span class="l-th">งานดูแลทั่วไป</span><span class="l-en">maintenance</span></td></tr>
+        <tr><th scope="row"><code>security</code></th><td><span class="l-th">แก้ช่องโหว่</span><span class="l-en">vulnerability fix</span></td></tr>
+        <tr><th scope="row"><code>revert</code></th><td><span class="l-th">ย้อน commit</span><span class="l-en">undo a commit</span></td></tr>
+        <tr><th scope="row"><code>etc</code></th><td><span class="l-th">งานที่ไม่เข้าหมวดไหน</span><span class="l-en">anything else</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3><span class="l-th">ตัวอย่างที่ผ่านและไม่ผ่าน</span><span class="l-en">Accepted and rejected</span></h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th scope="col"><span class="l-th">บรรทัดแรก</span><span class="l-en">First line</span></th><th scope="col"><span class="l-th">ผล</span><span class="l-en">Result</span></th><th scope="col"><span class="l-th">เหตุผล</span><span class="l-en">Why</span></th></tr></thead>
+      <tbody>
+        <tr><td><code>feat(kpi): เพิ่มกราฟรายเดือนในหน้า KPI</code></td><td><span class="badge badge-ok"><span class="l-th">ผ่าน</span><span class="l-en">Accepted</span></span></td><td><span class="l-th">มี scope ครบ</span><span class="l-en">type, scope and description</span></td></tr>
+        <tr><td><code>fix: แก้ปุ่มบันทึกกดไม่ได้ตอนไม่มีไฟล์แนบ</code></td><td><span class="badge badge-ok"><span class="l-th">ผ่าน</span><span class="l-en">Accepted</span></span></td><td><span class="l-th">ไม่ใส่ scope ได้</span><span class="l-en">scope is optional</span></td></tr>
+        <tr><td><code>perf(queries): add index for task list by assignee</code></td><td><span class="badge badge-ok"><span class="l-th">ผ่าน</span><span class="l-en">Accepted</span></span></td><td><span class="l-th">เขียนภาษาอังกฤษได้</span><span class="l-en">English is fine</span></td></tr>
+        <tr><td><code>etc: สรุป requirement ระบบ WMS เฟส 2</code></td><td><span class="badge badge-ok"><span class="l-th">ผ่าน</span><span class="l-en">Accepted</span></span></td><td><span class="l-th">งานที่ไม่เข้าหมวดใช้ etc</span><span class="l-en">use etc when nothing else fits</span></td></tr>
+        <tr><td><code>แก้</code></td><td><span class="badge badge-no"><span class="l-th">ไม่ผ่าน</span><span class="l-en">Rejected</span></span></td><td><span class="l-th">ไม่มี type</span><span class="l-en">no type</span></td></tr>
+        <tr><td><code>Feat: add login</code></td><td><span class="badge badge-no"><span class="l-th">ไม่ผ่าน</span><span class="l-en">Rejected</span></span></td><td><span class="l-th">type ตัวพิมพ์ใหญ่</span><span class="l-en">uppercase type</span></td></tr>
+        <tr><td><code>fix:แก้ปุ่มบันทึกกดไม่ได้</code></td><td><span class="badge badge-no"><span class="l-th">ไม่ผ่าน</span><span class="l-en">Rejected</span></span></td><td><span class="l-th">ไม่เว้นวรรคหลัง <code>:</code></span><span class="l-en">no space after <code>:</code></span></td></tr>
+        <tr><td><code>feature: เพิ่มกราฟรายเดือนในหน้า KPI</code></td><td><span class="badge badge-no"><span class="l-th">ไม่ผ่าน</span><span class="l-en">Rejected</span></span></td><td><span class="l-th">type ไม่อยู่ในรายการ</span><span class="l-en">unknown type</span></td></tr>
+        <tr><td><code>fix: แก้บั๊ก</code></td><td><span class="badge badge-no"><span class="l-th">ไม่ผ่าน</span><span class="l-en">Rejected</span></span></td><td><span class="l-th">สั้นเกินไป (7 ตัวอักษร)</span><span class="l-en">too short (7 characters)</span></td></tr>
+        <tr><td><code>fix: update code</code></td><td><span class="badge badge-no"><span class="l-th">ไม่ผ่าน</span><span class="l-en">Rejected</span></span></td><td><span class="l-th">คลุมเครือเกินไป</span><span class="l-en">too vague</span></td></tr>
+        <tr><td><code>deploy! fix login</code></td><td><span class="badge badge-no"><span class="l-th">ไม่ผ่าน</span><span class="l-en">Rejected</span></span></td><td><span class="l-th"><code>deploy!</code> ต้องอยู่บรรทัดของตัวเอง</span><span class="l-en"><code>deploy!</code> must be on its own line</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3><span class="l-th">สิ่งที่ไม่ถูกตรวจ</span><span class="l-en">What is not checked</span></h3>
+  <ul class="rules">
+    <li><span class="l-th">commit ที่มีแค่ <code>deploy!</code></span><span class="l-en">Commits that are only <code>deploy!</code></span></li>
+    <li><span class="l-th">Merge commit</span><span class="l-en">Merge commits</span></li>
+    <li><code>Revert "…"</code></li>
+    <li><code>fixup!</code>, <code>squash!</code>, <code>amend!</code></li>
+    <li><span class="l-th">repo ที่ remote ไม่ใช่ <code>tycthailand</code></span><span class="l-en">Repos whose remote is not <code>tycthailand</code></span></li>
+  </ul>
+
+  <h3><code>deploy!</code></h3>
+  <p class="l-th">ใช้ได้เหมือนเดิมทุกอย่าง ใส่ <code>deploy!</code> ไว้ <b>บรรทัดของตัวเอง</b> ใต้บรรทัดแรก หรือ commit เฉพาะ <code>deploy!</code> ก็ได้</p>
+  <p class="l-en">Works exactly as before. Put <code>deploy!</code> <b>on its own line</b> under the first line, or commit a bare <code>deploy!</code>.</p>
+  <div class="code"><pre><code>git commit -m "feat(kpi): เพิ่มกราฟรายเดือน" -m "deploy!"</code></pre></div>
+  <figure>
+    <a class="zoom" href="pi-commit-guide/terminal-deploy.png"><img loading="lazy" width="1400" height="255" src="pi-commit-guide/terminal-deploy.png" alt="" data-alt-th="commit deploy! ล้วน และ commit ที่มี deploy! เป็นบรรทัดที่สอง ทั้งสองผ่าน" data-alt-en="A bare deploy! commit and a commit with deploy! as the second line, both accepted"></a>
+    <figcaption><span class="l-th">ทั้งสองแบบผ่าน hook</span><span class="l-en">Both forms pass the hook.</span></figcaption>
+  </figure>
+  <p class="cap-label"><span class="l-th">ข้อความจริงจากภาพ (คัดลอกได้)</span><span class="l-en">Real output from the screenshot (copyable)</span></p>
+  <div class="code"><pre><code>~/demo $ git commit --allow-empty -m "deploy!"
+[main 94fa370] deploy!
+~/demo $ git commit --allow-empty -m "feat(kpi): เพิ่มกราฟรายเดือน" -m "deploy!"
+[main 0d93198] feat(kpi): เพิ่มกราฟรายเดือน</code></pre></div>
+</section>
+
+<section class="block" id="skill" aria-labelledby="h-skill">
+  <h2 id="h-skill"><span class="l-th">commit ผ่าน Claude Code</span><span class="l-en">Commit with Claude Code</span></h2>
+  <ol class="steps">
+    <li>
+      <b><span class="l-th">stage ไฟล์ หรือไม่ต้องก็ได้</span><span class="l-en">Stage files, or not</span></b>
+      <p><span class="l-th">ถ้ายังไม่ได้ stage Claude จะถามว่าจะรวมไฟล์ไหน</span><span class="l-en">If nothing is staged, Claude asks which files to include.</span></p>
+    </li>
+    <li>
+      <b><span class="l-th">พิมพ์ <code>/pi-commit:commit</code></span><span class="l-en">Type <code>/pi-commit:commit</code></span></b>
+      <p><span class="l-th">หรือพูดว่า &quot;commit ให้หน่อย&quot;</span><span class="l-en">or just say &quot;commit this for me&quot;.</span></p>
+    </li>
+    <li>
+      <b><span class="l-th">Claude อ่าน diff และร่างข้อความในภาษาของคุณ</span><span class="l-en">Claude reads the diff and drafts the message in your language</span></b>
+      <p><span class="l-th">ถ้างานปนกัน (เช่น แก้บั๊กกับเพิ่มฟีเจอร์) จะเสนอให้แยกเป็นหลาย commit</span><span class="l-en">If the work is mixed (for example a fix and a feature) it offers to split it into separate commits.</span></p>
+    </li>
+    <li>
+      <b><span class="l-th">เลือก commit, แก้ข้อความ หรือยกเลิก</span><span class="l-en">Choose commit, edit, or cancel</span></b>
+      <p><span class="l-th">hook ตรวจข้อความอีกชั้นก่อนบันทึก</span><span class="l-en">The hook checks the message once more before it is saved.</span></p>
+    </li>
+    <li>
+      <b><span class="l-th">Claude แสดงผลและ <u>ไม่</u> push</span><span class="l-en">Claude shows the result and does <u>not</u> push</span></b>
+      <p><span class="l-th">การ push เป็นหน้าที่ของคุณ</span><span class="l-en">Pushing is up to you.</span></p>
+    </li>
+  </ol>
+
+  <figure>
+    <a class="zoom" href="pi-commit-guide/claude-draft.png"><img loading="lazy" width="1400" height="738" src="pi-commit-guide/claude-draft.png" alt="" data-alt-th="Claude Code แสดงข้อความ commit ที่ร่างไว้ feat(kpi): เพิ่มฟังก์ชันรวมยอด KPI รายเดือน พร้อมตัวเลือก commit, แก้ข้อความ, ยกเลิก" data-alt-en="Claude Code showing the drafted commit message feat(kpi): เพิ่มฟังก์ชันรวมยอด KPI รายเดือน with the choices commit, edit message, cancel"></a>
+    <figcaption><span class="l-th">ร่างข้อความและตัวเลือก</span><span class="l-en">The draft and the choices.</span></figcaption>
+  </figure>
+  <p class="cap-label"><span class="l-th">ข้อความจากภาพ (คัดลอกได้)</span><span class="l-en">Text from the screenshot (copyable)</span></p>
+  <div class="code"><pre><code>ข้อความ commit ที่ร่างไว้:
+
+feat(kpi): เพิ่มฟังก์ชันรวมยอด KPI รายเดือน
+
+จะ commit เลยไหม?
+
+1. commit
+   commit ด้วยข้อความนี้
+2. แก้ข้อความ
+   แก้ข้อความก่อน commit
+3. ยกเลิก
+   ไม่ commit</code></pre></div>
+
+  <figure>
+    <a class="zoom" href="pi-commit-guide/claude-done.png"><img loading="lazy" width="1400" height="721" src="pi-commit-guide/claude-done.png" alt="" data-alt-th="Claude Code รายงานว่า commit f81a9d2 ผ่าน hook แล้ว และยังไม่ได้ push" data-alt-en="Claude Code reporting commit f81a9d2 passed the hook and was not pushed"></a>
+    <figcaption><span class="l-th">commit สำเร็จ Claude แจ้งว่ายังไม่ได้ push และข้อความไม่มีบรรทัด <code>deploy!</code></span><span class="l-en">Committed. Claude says it did not push and that the message has no <code>deploy!</code> line.</span></figcaption>
+  </figure>
+  <p class="cap-label"><span class="l-th">ข้อความจากภาพ (คัดลอกได้)</span><span class="l-en">Text from the screenshot (copyable)</span></p>
+  <div class="code"><pre><code>Committed f81a9d2
+
+ผ่าน hook และ commit เรียบร้อยแล้วครับ
+
+f81a9d2 feat(kpi): เพิ่มฟังก์ชันรวมยอด KPI รายเดือน
+
+ใน commit นี้มีไฟล์เดียวคือ src/kpi-totals.js (ฟังก์ชัน monthlyTotals) และผมยังไม่ได้ push ให้นะครับ
+
+ข้อความ commit ไม่มีบรรทัด deploy! ถ้าอยากให้ build ตอน push ต้องเพิ่มบรรทัดนี้ก่อนครับ</code></pre></div>
+
+  <h3><span class="l-th">ถ้าสั่งให้ข้าม hook</span><span class="l-en">If told to skip the hook</span></h3>
+  <p class="l-th">ถ้าสั่ง Claude ให้ใช้ <code>--no-verify</code> plugin จะบล็อกด้วยข้อความนี้</p>
+  <p class="l-en">If Claude is told to use <code>--no-verify</code>, the plugin blocks it with this message.</p>
+  <div class="code"><pre><code>PreToolUse:Bash hook error: pi-commit: blocked. Do not skip the commit-msg hook (--no-verify, -n, core.hooksPath). Rewrite the message as "type(scope): description" and commit normally. If -n is part of the message text, reword it.</code></pre></div>
+</section>
+
+<section class="block" id="manual" aria-labelledby="h-manual">
+  <h2 id="h-manual"><span class="l-th">commit แบบไม่ใช้ skill</span><span class="l-en">Commit without the skill</span></h2>
+
+  <h3><span class="l-th">ทาง terminal</span><span class="l-en">Terminal</span></h3>
+  <p class="l-th"><b>ถูกปฏิเสธ</b> — บรรทัด <code>Problem</code> บอกสาเหตุ <code>Example</code> ให้ตัวอย่างที่ใช้ได้</p>
+  <p class="l-en"><b>Rejected.</b> The <code>Problem</code> line gives the cause and <code>Example</code> shows a message that works.</p>
+  <figure>
+    <a class="zoom" href="pi-commit-guide/terminal-rejected.png"><img loading="lazy" width="1400" height="369" src="pi-commit-guide/terminal-rejected.png" alt="" data-alt-th="git commit -m แก้ ถูกปฏิเสธ: Problem บอกว่าบรรทัดแรกต้องเป็น type(scope): description" data-alt-en="git commit -m with a one-word Thai message rejected: Problem says the first line must be type(scope): description"></a>
+    <figcaption><span class="l-th">commit ที่ไม่มี type</span><span class="l-en">A commit with no type.</span></figcaption>
+  </figure>
+  <p class="cap-label"><span class="l-th">ข้อความจริงจากภาพ (คัดลอกได้)</span><span class="l-en">Real output from the screenshot (copyable)</span></p>
+  <div class="code"><pre><code>~/demo $ git commit -m "แก้"
+pi-commit: commit rejected
+
+  You wrote : แก้
+  Problem   : first line must be "type(scope): description" (lowercase type, one space after the colon)
+
+  Expected  : type(scope): description      (scope is optional)
+  Example   : fix(login): แก้ปุ่มบันทึกกดไม่ได้
+  Types     : feat fix perf refactor docs test style build ci chore security revert etc</code></pre></div>
+
+  <p class="l-th"><b>ผ่าน</b> — <code>git log</code> แสดงรหัสพนักงานเป็นชื่อผู้ commit</p>
+  <p class="l-en"><b>Accepted.</b> <code>git log</code> shows the employee code as the author.</p>
+  <figure>
+    <a class="zoom" href="pi-commit-guide/terminal-accepted.png"><img loading="lazy" width="1400" height="255" src="pi-commit-guide/terminal-accepted.png" alt="" data-alt-th="commit fix(auth) ผ่าน และ git log แสดงชื่อผู้ commit เป็น 1234" data-alt-en="A fix(auth) commit accepted and git log showing 1234 as the author"></a>
+    <figcaption><span class="l-th">รูปแบบถูกต้อง และชื่อผู้ commit คือ 1234</span><span class="l-en">Valid format, and the author is 1234.</span></figcaption>
+  </figure>
+  <p class="cap-label"><span class="l-th">ข้อความจริงจากภาพ (คัดลอกได้)</span><span class="l-en">Real output from the screenshot (copyable)</span></p>
+  <div class="code"><pre><code>~/demo $ git commit -m "fix(auth): ไม่ส่งฟอร์มว่างไปบันทึก"
+[main a4d44ae] fix(auth): ไม่ส่งฟอร์มว่างไปบันทึก
+ 1 file changed, 1 insertion(+)
+~/demo $ git log --format='%an | %s'
+1234 | fix(auth): ไม่ส่งฟอร์มว่างไปบันทึก
+1234 | chore: เริ่มโปรเจค demo</code></pre></div>
+
+  <p class="l-th"><b>ชื่อผิด</b> (ยังไม่ได้ทำ setup) — ข้อความถูกต้องแต่ถูกปฏิเสธเพราะ <code>user.name</code> ไม่ใช่เลข 4 หลัก</p>
+  <p class="l-en"><b>Wrong name</b> (setup not done). The message is fine but it is rejected because <code>user.name</code> is not 4 digits.</p>
+  <figure>
+    <a class="zoom" href="pi-commit-guide/terminal-name-rejected.png"><img loading="lazy" width="1400" height="382" src="pi-commit-guide/terminal-name-rejected.png" alt="" data-alt-th="commit ถูกปฏิเสธเพราะ git user.name เป็น somchai ต้องเป็นรหัสพนักงาน 4 หลัก พร้อมวิธีแก้" data-alt-en="A commit rejected because git user.name is somchai and must be a 4-digit employee code, with the fix shown"></a>
+    <figcaption><span class="l-th">บรรทัด <code>Fix:</code> บอกคำสั่งที่ต้องรัน</span><span class="l-en">The <code>Fix:</code> line gives the command to run.</span></figcaption>
+  </figure>
+  <p class="cap-label"><span class="l-th">ข้อความจริงจากภาพ (คัดลอกได้)</span><span class="l-en">Real output from the screenshot (copyable)</span></p>
+  <div class="code"><pre><code>~/demo $ git -c user.name=somchai commit --allow-empty -m "feat(kpi): เพิ่มกราฟรายเดือน"
+pi-commit: commit rejected
+
+  You wrote : feat(kpi): เพิ่มกราฟรายเดือน
+  Problem   : git user.name is "somchai" - it must be your 4-digit employee code
+              Fix: git config --global user.name "&lt;code&gt;"   (or run /pi-commit:setup in Claude Code)
+
+  Expected  : type(scope): description      (scope is optional)
+  Example   : fix(login): แก้ปุ่มบันทึกกดไม่ได้
+  Types     : feat fix perf refactor docs test style build ci chore security revert etc</code></pre></div>
+
+  <h3><span class="l-th">ทาง VS Code (ช่อง Source Control)</span><span class="l-en">VS Code (Source Control panel)</span></h3>
+  <ol class="steps">
+    <li>
+      <b><span class="l-th">พิมพ์ข้อความในช่อง Message แล้วกด <kbd>Ctrl</kbd>+<kbd>Enter</kbd> (Commit)</span><span class="l-en">Type the message in the Message box and press <kbd>Ctrl</kbd>+<kbd>Enter</kbd> (Commit)</span></b>
+    </li>
+    <li>
+      <b><span class="l-th">ถ้าถูกปฏิเสธ VS Code จะแสดง dialog &quot;Git: pi-commit: commit rejected&quot;</span><span class="l-en">If it is rejected, VS Code shows a dialog &quot;Git: pi-commit: commit rejected&quot;</span></b>
+    </li>
+    <li>
+      <b><span class="l-th">กด <b>Show Command Output</b> เพื่อดู <code>Problem</code> และ <code>Example</code></span><span class="l-en">Click <b>Show Command Output</b> to see <code>Problem</code> and <code>Example</code></span></b>
+    </li>
+    <li>
+      <b><span class="l-th">แก้ข้อความ แล้ว commit ใหม่</span><span class="l-en">Fix the message and commit again</span></b>
+      <p><span class="l-th">VS Code เก็บข้อความและไฟล์ที่ stage ไว้ให้</span><span class="l-en">VS Code keeps your text and staged files.</span></p>
+    </li>
+  </ol>
+
+  <figure>
+    <a class="zoom" href="pi-commit-guide/vscode-rejected.png"><img loading="lazy" width="1400" height="788" src="pi-commit-guide/vscode-rejected.png" alt="" data-alt-th="VS Code แสดง dialog Git: pi-commit: commit rejected พร้อมปุ่ม Show Command Output, Cancel, Open Git Log" data-alt-en="VS Code dialog reading Git: pi-commit: commit rejected with the buttons Show Command Output, Cancel and Open Git Log"></a>
+    <figcaption><span class="l-th">dialog เมื่อถูกปฏิเสธ</span><span class="l-en">The dialog when a commit is rejected.</span></figcaption>
+  </figure>
+  <figure>
+    <a class="zoom" href="pi-commit-guide/vscode-output.png"><img loading="lazy" width="1400" height="788" src="pi-commit-guide/vscode-output.png" alt="" data-alt-th="หน้า Command Output ใน VS Code แสดง You wrote, Problem, Expected, Example และ Types" data-alt-en="The VS Code command output showing You wrote, Problem, Expected, Example and Types"></a>
+    <figcaption><span class="l-th">หลังกด Show Command Output (บรรทัดยาวถูกตัดในภาพ ข้อความเต็มอยู่ด้านล่าง)</span><span class="l-en">After clicking Show Command Output (long lines are cut off in the image; the full text is below).</span></figcaption>
+  </figure>
+  <p class="cap-label"><span class="l-th">ข้อความเต็ม (คัดลอกได้)</span><span class="l-en">Full text (copyable)</span></p>
+  <div class="code"><pre><code>pi-commit: commit rejected
+
+  You wrote : แก้
+  Problem   : first line must be "type(scope): description" (lowercase type, one space after the colon)
+
+  Expected  : type(scope): description      (scope is optional)
+  Example   : fix(login): แก้ปุ่มบันทึกกดไม่ได้
+  Types     : feat fix perf refactor docs test style build ci chore security revert etc</code></pre></div>
+  <figure>
+    <a class="zoom" href="pi-commit-guide/vscode-accepted.png"><img loading="lazy" width="1400" height="788" src="pi-commit-guide/vscode-accepted.png" alt="" data-alt-th="VS Code หลัง commit สำเร็จ: Graph แสดงรหัส 1234 ต่อท้ายทุก commit และมีปุ่ม Publish Branch" data-alt-en="VS Code after a successful commit: the Graph shows 1234 next to every commit and a Publish Branch button"></a>
+    <figcaption><span class="l-th">commit สำเร็จ Graph แสดงรหัสพนักงานต่อท้ายทุก commit ปุ่ม Publish Branch ขึ้นเพราะ repo ตัวอย่างยังไม่มี upstream การ push ยังเป็นการตัดสินใจของคุณ</span><span class="l-en">Committed. The Graph shows the employee code next to each commit. The Publish Branch button appears because the demo repo has no upstream; pushing is still your call.</span></figcaption>
+  </figure>
+</section>
+
+<section class="block" id="errors" aria-labelledby="h-errors">
+  <h2 id="h-errors"><span class="l-th">ข้อความ error</span><span class="l-en">Error messages</span></h2>
+  <p class="lead l-th">ดูบรรทัด <code>Problem</code> ในข้อความที่ถูกปฏิเสธ แล้วเทียบกับตารางนี้</p>
+  <p class="lead l-en">Find the <code>Problem</code> line in the rejection message and match it here.</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th scope="col">Problem</th><th scope="col"><span class="l-th">ความหมาย</span><span class="l-en">Meaning</span></th><th scope="col"><span class="l-th">วิธีแก้</span><span class="l-en">Fix</span></th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>first line must be "type(scope): description" …</code></td>
+          <td><span class="l-th">ไม่มี type, type เป็นตัวพิมพ์ใหญ่, ไม่เว้นวรรคหลัง <code>:</code> หรือ scope ว่าง</span><span class="l-en">Missing or uppercase type, no space after <code>:</code>, or an empty scope.</span></td>
+          <td><span class="l-th">เขียนใหม่เป็น</span><span class="l-en">Rewrite as</span> <code>fix: …</code></td>
+        </tr>
+        <tr>
+          <td><code>unknown type "feature"</code></td>
+          <td><span class="l-th">type ไม่อยู่ในรายการ</span><span class="l-en">The type is not in the list.</span></td>
+          <td><span class="l-th">ใช้หนึ่งใน 13 type</span><span class="l-en">Use one of the 13 types.</span></td>
+        </tr>
+        <tr>
+          <td><code>description is too short - use at least 10 characters</code></td>
+          <td><span class="l-th">description สั้นกว่า 10 ตัวอักษร</span><span class="l-en">The description is under 10 characters.</span></td>
+          <td><span class="l-th">บอกว่าเปลี่ยนอะไรและที่ไหน</span><span class="l-en">Say what changed and where.</span></td>
+        </tr>
+        <tr>
+          <td><code>description "…" is too vague</code></td>
+          <td><span class="l-th">เช่น &quot;update code&quot;</span><span class="l-en">For example &quot;update code&quot;.</span></td>
+          <td><span class="l-th">อธิบายสิ่งที่เปลี่ยนจริง</span><span class="l-en">Describe the actual change.</span></td>
+        </tr>
+        <tr>
+          <td><code>put deploy! on its own line …</code></td>
+          <td><span class="l-th">บรรทัดแรกขึ้นต้นด้วย <code>deploy!</code></span><span class="l-en">The first line starts with <code>deploy!</code>.</span></td>
+          <td><code>-m "fix(...): ..." -m "deploy!"</code></td>
+        </tr>
+        <tr>
+          <td><code>git user.name is "…" - it must be your 4-digit employee code</code></td>
+          <td><span class="l-th">ยังไม่ได้ทำ setup หรือ repo นั้นตั้ง <code>user.name</code> ทับไว้</span><span class="l-en">Setup is not done, or the repo overrides the name.</span></td>
+          <td><span class="l-th">รัน <code>/pi-commit:setup</code> หรือ</span><span class="l-en">Run <code>/pi-commit:setup</code> or</span> <code>git config --global user.name "1234"</code><br><span class="l-th">ถ้า repo ตั้งทับไว้ ให้ลบด้วย <code>git config --unset user.name</code> ใน repo นั้น</span><span class="l-en">If the repo overrides it, remove that with <code>git config --unset user.name</code> inside the repo.</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="block faq" id="faq" aria-labelledby="h-faq">
+  <h2 id="h-faq"><span class="l-th">คำถามที่พบบ่อย</span><span class="l-en">FAQ</span></h2>
+
+  <details>
+    <summary><span><span class="l-th">commit ที่ผิดรูปแบบหลุดเข้าไปได้</span><span class="l-en">A badly formatted commit went through</span></span></summary>
+    <div class="a">
+      <p class="l-th">repo นั้นไม่ได้อยู่ใต้ <code>tycthailand</code> หรือเครื่องนั้นยังไม่ได้รัน setup ลองตรวจด้วย</p>
+      <p class="l-en">The repo is not under <code>tycthailand</code>, or setup has not been run on that machine. Check with:</p>
+      <div class="code"><pre><code>sh plugins/pi-commit/scripts/setup.sh status</code></pre></div>
+    </div>
+  </details>
+  <details>
+    <summary><span><span class="l-th">setup บอกว่า <code>core.hooksPath is already set</code></span><span class="l-en">Setup says <code>core.hooksPath is already set</code></span></span></summary>
+    <div class="a">
+      <p class="l-th">เครื่องมืออื่นใช้ global hooks อยู่ setup ไม่ได้เปลี่ยนอะไรเลย คุณต้องตัดสินใจเองว่าจะรันคำสั่งนี้แล้วทำ setup ใหม่หรือไม่</p>
+      <p class="l-en">Another tool owns the global hooks and setup changed nothing. You decide whether to run this and then run setup again.</p>
+      <div class="code"><pre><code>git config --global --unset core.hooksPath</code></pre></div>
+    </div>
+  </details>
+  <details>
+    <summary><span><span class="l-th">commit บนเว็บ GitHub ถูกตรวจไหม</span><span class="l-en">Are commits made on the GitHub website checked?</span></span></summary>
+    <div class="a">
+      <p class="l-th">ไม่ถูกตรวจ เพราะไม่มี hook รันบนเว็บ แต่ยังควรเขียนในรูปแบบเดียวกัน</p>
+      <p class="l-en">No, because no hook runs there. Still write them in the same format.</p>
+    </div>
+  </details>
+  <details>
+    <summary><span><span class="l-th">เปลี่ยนอีเมลหรือโปรไฟล์ GitHub ของฉันไหม</span><span class="l-en">Does it change my email or GitHub profile?</span></span></summary>
+    <div class="a">
+      <p class="l-th">ไม่ เปลี่ยนเฉพาะ <code>user.name</code>, <code>core.hooksPath</code> และ <code>commit.template</code> ระดับ global</p>
+      <p class="l-en">No. Only the global <code>user.name</code>, <code>core.hooksPath</code> and <code>commit.template</code>.</p>
+    </div>
+  </details>
+  <details>
+    <summary><span><span class="l-th">repo มี <code>.git/hooks/commit-msg</code> ของตัวเองอยู่แล้ว</span><span class="l-en">My repo already has its own <code>.git/hooks/commit-msg</code></span></span></summary>
+    <div class="a">
+      <p class="l-th">ยังทำงานต่อ หลังจากการตรวจของ pi-commit ผ่านแล้ว</p>
+      <p class="l-en">It still runs, after pi-commit's check passes.</p>
+    </div>
+  </details>
+  <details>
+    <summary><span><span class="l-th">อัปเดต plugin</span><span class="l-en">Updating the plugin</span></span></summary>
+    <div class="a">
+      <p class="l-th">ใน Claude Code เปิด <code>/plugin</code> ไปที่ Marketplaces เลือก pi-claude-md แล้วอัปเดต (หรือเปิด auto-update) จากนั้นรัน <code>/pi-commit:setup</code> อีกครั้งเพื่อคัดลอก hook ตัวใหม่</p>
+      <p class="l-en">In Claude Code open <code>/plugin</code>, go to Marketplaces, pick pi-claude-md and update (or enable auto-update). Then run <code>/pi-commit:setup</code> again to copy the new hook.</p>
+    </div>
+  </details>
+  <details>
+    <summary><span><span class="l-th">ถอนการติดตั้ง</span><span class="l-en">Uninstalling</span></span></summary>
+    <div class="a">
+      <p class="l-th">รันคำสั่งแรกเพื่อคืนค่า git แล้วรันคำสั่งที่สองเพื่อถอน plugin</p>
+      <p class="l-en">Run the first command to restore git, then the second to remove the plugin.</p>
+      <div class="code"><pre><code>sh plugins/pi-commit/scripts/setup.sh uninstall
+claude plugin uninstall pi-commit@pi-claude-md</code></pre></div>
+    </div>
+  </details>
+</section>
+
+</main>
+</div>
+
+<footer class="foot">
+  <span class="l-th">pi-commit — คู่มือสำหรับทีม PI, TYC Thailand</span>
+  <span class="l-en">pi-commit — guide for the PI team, TYC Thailand</span>
+</footer>
+
+<dialog id="imgDialog" aria-label="Image">
+  <button type="button" class="x" id="imgClose"><span class="l-th">ปิด</span><span class="l-en">Close</span></button>
+  <div class="sc"><img id="imgBig" alt=""></div>
+</dialog>
+
+<script>
+(function () {
+  var d = document, h = d.documentElement;
+  function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function put(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+  var titles = {
+    th: 'pi-commit — มาตรฐาน commit ของทีม',
+    en: 'pi-commit — the team commit standard'
+  };
+  var labels = {
+    th: { copy: 'คัดลอก', done: 'คัดลอกแล้ว', copyAria: 'คัดลอกโค้ดบล็อกนี้', zoom: 'เปิดภาพขนาดเต็ม' },
+    en: { copy: 'Copy', done: 'Copied', copyAria: 'Copy this code block', zoom: 'Open full size image' }
+  };
+
+  function lang() { return h.getAttribute('lang') === 'en' ? 'en' : 'th'; }
+
+  function applyLang(l) {
+    h.setAttribute('lang', l);
+    d.title = titles[l];
+    var btns = d.querySelectorAll('#langSeg button');
+    for (var i = 0; i < btns.length; i++) btns[i].setAttribute('aria-pressed', btns[i].getAttribute('data-lang') === l ? 'true' : 'false');
+    var imgs = d.querySelectorAll('img[data-alt-th]');
+    for (var j = 0; j < imgs.length; j++) imgs[j].setAttribute('alt', imgs[j].getAttribute('data-alt-' + l));
+    var links = d.querySelectorAll('a.zoom');
+    for (var k = 0; k < links.length; k++) links[k].setAttribute('aria-label', links[k].querySelector('img').getAttribute('alt') + ' — ' + labels[l].zoom);
+    var cps = d.querySelectorAll('.copy');
+    for (var m = 0; m < cps.length; m++) {
+      cps[m].setAttribute('aria-label', labels[l].copyAria);
+      cps[m].textContent = cps[m].classList.contains('done') ? labels[l].done : labels[l].copy;
+    }
+  }
+
+  function applyTheme(t) {
+    h.setAttribute('data-theme', t);
+    var btns = d.querySelectorAll('#themeSeg button');
+    for (var i = 0; i < btns.length; i++) btns[i].setAttribute('aria-pressed', btns[i].getAttribute('data-theme-set') === t ? 'true' : 'false');
+  }
+
+  d.getElementById('langSeg').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-lang]');
+    if (!b) return;
+    var l = b.getAttribute('data-lang');
+    put('pi-commit-lang', l);
+    applyLang(l);
+  });
+  d.getElementById('themeSeg').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-theme-set]');
+    if (!b) return;
+    var t = b.getAttribute('data-theme-set');
+    put('pi-theme', t);
+    applyTheme(t);
+  });
+
+  function copyText(text, done) {
+    function fallback() {
+      var ta = d.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      d.body.appendChild(ta);
+      ta.select();
+      try { d.execCommand('copy'); } catch (e) {}
+      d.body.removeChild(ta);
+      done();
+    }
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done, fallback);
+    } else {
+      fallback();
+    }
+  }
+
+  var blocks = d.querySelectorAll('.code');
+  for (var i = 0; i < blocks.length; i++) {
+    (function (block) {
+      var b = d.createElement('button');
+      b.type = 'button';
+      b.className = 'copy';
+      block.appendChild(b);
+      b.addEventListener('click', function () {
+        copyText(block.querySelector('pre').textContent, function () {
+          b.classList.add('done');
+          b.textContent = labels[lang()].done;
+          setTimeout(function () {
+            b.classList.remove('done');
+            b.textContent = labels[lang()].copy;
+          }, 1800);
+        });
+      });
+    })(blocks[i]);
+  }
+
+  var dlg = d.getElementById('imgDialog'), big = d.getElementById('imgBig');
+  d.addEventListener('click', function (e) {
+    var a = e.target.closest('a.zoom');
+    if (!a || !dlg.showModal) return;
+    e.preventDefault();
+    big.src = a.getAttribute('href');
+    big.alt = a.querySelector('img').getAttribute('alt');
+    dlg.showModal();
+  });
+  d.getElementById('imgClose').addEventListener('click', function () { dlg.close(); });
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+
+  var toc = d.getElementById('tocBox');
+  var wide = matchMedia('(min-width:1001px)');
+  function syncToc() { toc.open = wide.matches; }
+  syncToc();
+  if (wide.addEventListener) wide.addEventListener('change', syncToc);
+  toc.addEventListener('click', function (e) {
+    if (e.target.closest('a') && !wide.matches) toc.open = false;
+  });
+
+  var links = d.querySelectorAll('.toc a');
+  var map = {};
+  for (var n = 0; n < links.length; n++) map[links[n].getAttribute('href').slice(1)] = links[n];
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting && map[en.target.id]) {
+          for (var k in map) map[k].removeAttribute('aria-current');
+          map[en.target.id].setAttribute('aria-current', 'true');
+        }
+      });
+    }, { rootMargin: '-70px 0px -70% 0px' });
+    for (var id in map) { var s = d.getElementById(id); if (s) io.observe(s); }
+  }
+
+  var t0 = h.getAttribute('data-theme');
+  applyTheme(t0);
+  applyLang(lang());
+})();
+</script>
+</body>
+</html>
