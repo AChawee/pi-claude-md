@@ -5,6 +5,7 @@ INSTALL_DIR="$CONFIG_DIR/git-hooks"
 PREVIOUS_NAME_FILE="$CONFIG_DIR/pi-commit.previous-name"
 HOOKS_PATH_SETTING='~/.config/pi-claude-md/git-hooks'
 TEMPLATE_SETTING='~/.config/pi-claude-md/git-hooks/commit-template.txt'
+CR=$(printf '\r')
 
 fail() {
   printf 'pi-commit setup: %s\n' "$1" >&2
@@ -26,6 +27,7 @@ ask_code() {
   while :; do
     printf 'Employee code (4 digits): ' >&2
     read -r answer || fail "cancelled - nothing was changed"
+    answer=${answer%"$CR"}
     is_employee_code "$answer" && { code=$answer; return; }
     printf 'Must be exactly 4 digits, e.g. 1234. Try again.\n' >&2
   done
@@ -34,6 +36,7 @@ ask_code() {
 confirm() {
   printf '\nCurrent git name : %s\nNew git name     : %s\nApply? [Y/n] ' "${current_name:-(not set)}" "$code" >&2
   read -r answer || fail "cancelled - nothing was changed"
+  answer=${answer%"$CR"}
   case $answer in
     "" | y | Y | yes | YES) ;;
     *) fail "cancelled - nothing was changed" ;;

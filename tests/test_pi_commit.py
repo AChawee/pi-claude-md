@@ -294,6 +294,12 @@ class Setup(Sandbox):
         self.assertEqual(self.setup_sh("install", stdin="1234\n\n").returncode, 0)
         self.assertEqual(self.global_config("user.name"), CODE)
 
+    def test_console_line_endings_are_accepted(self):
+        r = subprocess.run([SH, str(SETUP), "install"], cwd=self.home, input=b"1234\r\n\r\n", env=self.env,
+                           capture_output=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stderr.decode("utf-8", "replace"))
+        self.assertEqual(self.global_config("user.name"), CODE)
+
     def test_answer_no_changes_nothing(self):
         before = self.global_config_snapshot()
         r = self.setup_sh("install", stdin="1234\nn\n")
