@@ -75,6 +75,7 @@ class DingCli(unittest.TestCase):
         self.assertEqual(r.returncode, 0, r.stderr)
         self.assertIn("report.pdf", r.stdout)
 
+    @unittest.skipIf(os.name == "nt", "Windows forbids \" in filenames")
     def test_filename_that_breaks_multipart_is_rejected(self):
         attachment = self.home / 'report "final".pdf'
         attachment.write_bytes(b"%PDF-1.4")
