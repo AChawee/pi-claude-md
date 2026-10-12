@@ -64,7 +64,7 @@ claude
 - **ทำอะไร:** ตั้ง `git user.name` เป็นรหัสพนักงาน และติดตั้ง hook ที่ไม่ยอมให้ commit ถ้า message ไม่ตรง `type(scope): description` เพื่อให้ระบบรู้ว่าใครทำอะไร
 - **ใช้เมื่อ:** ทุกครั้งที่ commit ใน repo ของ `tycthailand` — ผ่าน `/pi-commit:commit` หรือ commit เองตามปกติ (terminal, VS Code)
 - **ตัวอย่าง:** `/pi-commit:commit` · `commit งานนี้ให้หน่อย`
-- **คู่มือฉบับเต็ม:** [docs/pi-commit-guide.html](./docs/pi-commit-guide.html) (flowchart, format, ขั้นตอนทีละ step)
+- **คู่มือฉบับเต็ม:** [เปิดบนเว็บ](https://ken1lnw.github.io/pi-claude-md/pi-commit-guide.html) · [ไฟล์ใน repo](./docs/pi-commit-guide.html) (flowchart, format, ขั้นตอนทีละ step)
 - **ต้องมีเพิ่ม:** git เท่านั้น (Windows ใช้ Git for Windows) ไม่ต้องลง Python
 
 ## สิ่งที่ต้องมี

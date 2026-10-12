@@ -64,7 +64,7 @@ Then type in Claude Code:
 - **What it does:** Sets `git user.name` to your employee code and installs a hook that refuses commits whose message isn't `type(scope): description`, so the team can see who did what.
 - **Use it when:** committing in any `tycthailand` repo — through `/pi-commit:commit` or as usual (terminal, VS Code).
 - **Examples:** `/pi-commit:commit` · `commit this work`
-- **Full guide:** [docs/pi-commit-guide.html](./docs/pi-commit-guide.html) (flowchart, format, step by step)
+- **Full guide:** [open on the web](https://ken1lnw.github.io/pi-claude-md/pi-commit-guide.html) · [file in the repo](./docs/pi-commit-guide.html) (flowchart, format, step by step)
 - **Extra requirements:** git only (Git for Windows on Windows). No Python needed.
 
 ## Requirements
