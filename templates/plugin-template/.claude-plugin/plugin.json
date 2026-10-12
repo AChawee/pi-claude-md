@@ -1,0 +1,9 @@
+{
+  "name": "my-skill",
+  "version": "1.0.0",
+  "description": "อธิบายใน 1 บรรทัดว่า plugin นี้ทำอะไร",
+  "author": {
+    "name": "your-name"
+  },
+  "repository": "https://github.com/ken1lnw/pi-claude-md"
+}

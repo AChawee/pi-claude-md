@@ -1,0 +1,9 @@
+{
+  "name": "ding",
+  "version": "1.0.0",
+  "description": "ส่งข้อความ markdown พร้อมรูป/ไฟล์แนบเข้ากลุ่ม DingTalk ของ TYCTH — ต้องกรอก token ใน ding.env ก่อนติดตั้ง",
+  "author": {
+    "name": "ken1lnw"
+  },
+  "repository": "https://github.com/ken1lnw/pi-claude-md"
+}

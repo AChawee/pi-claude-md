@@ -1,6 +1,12 @@
 ---
 name: tyc-design-system
 description: Use whenever creating, restyling, or reviewing UI/frontend code for a TYC Thailand internal system (new project or existing one — e.g. frontend-mes, wms, rcs-rmr-pm, or any new internal tool). Enforces the org's single design system (brand colors, button/table/card conventions, radius/spacing scale, dark+light mode) instead of improvising a new look per project. Also use when asked about "TYC theme", "TYC brand guideline", "design tokens", or to make a system "match the design system". Supports full-reskin, partial (named-module), and extend-the-library modes.
+metadata:
+  author: Narawit
+  created: 2026-07-15
+  updated: 2026-10-12
+  tags: [design-system, html]
+  status: stable
 ---
 
 # TYC Thailand — Design System
@@ -116,10 +122,12 @@ token or component pattern.
 4. Verify structural balance after editing (open/close tag and brace counts
    should match) and smoke-test in a browser before calling it done — same
    as any edit to this file.
-5. **After editing the Desktop master file, re-sync the copies** in
-   `~/.claude/skills/tyc-design-system/reference/` (`theme-ui-guideline.html`,
-   plus the token CSS/JSON if tokens changed) so future `full`/`partial` runs
-   see the addition. Tell the user this happened — don't do it silently.
+5. **After editing the Desktop master file, re-sync the copies** in the
+   `pi-claude-md` repo at `plugins/tyc-design-system/skills/tyc-design-system/reference/`
+   (`theme-ui-guideline.html`, plus the token CSS/JSON if tokens changed),
+   bump `version` in that plugin's `.claude-plugin/plugin.json`, and open a PR
+   so every installed copy picks it up on update. Never edit the installed
+   plugin cache. Tell the user this happened — don't do it silently.
 
 ## 2. Read before you write
 
@@ -244,7 +252,7 @@ reskin.
 | `reference/tyc-design-tokens.css` | Tailwind v4 `@theme inline` + `:root`/`.dark` token file — schema-matched to the real Next.js repos' `globals.css`. |
 | `reference/tyc-design-tokens.json` | Portable W3C-format tokens (color/radius/spacing/typography/shadow), for non-Tailwind targets. |
 | `reference/tailwind.config.js` | Tailwind v3-compatible config, for legacy projects without CSS-first Tailwind v4. |
-| `tyc-design-system-skill-guide.html` | Human-facing install/usage manual (not read by Claude at runtime) — open in a browser. Covers installation (this machine, teammate machines, repo-scoped), the three modes with example prompts, and an FAQ. |
+| `tyc-design-system-skill-guide.html` | Human-facing install/usage manual (not read by Claude at runtime) — open in a browser. Covers installation via the `pi-claude-md` marketplace, the three modes with example prompts, and an FAQ. |
 
 These reference files are **copies**, refreshed manually (or via `extend`
 mode, step 5) — if `theme-ui-guideline.html` on the user's Desktop has moved

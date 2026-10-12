@@ -248,12 +248,11 @@
 
 <div class="hero">
   <div class="hero-inner">
-    <span class="eyebrow">Claude Code · Personal Skill</span>
+    <span class="eyebrow">Claude Code · Plugin</span>
     <h1>TYC Design System Skill — คู่มือติดตั้งและใช้งาน</h1>
     <p>เอกสารนี้สอนวิธีติดตั้งและเรียกใช้ skill <code class="mono" style="background:rgba(255,255,255,.14); padding:2px 7px; border-radius:5px;">tyc-design-system</code> เพื่อให้ทุกระบบภายในองค์กรใช้ธีมเดียวกัน — สี ปุ่ม ตาราง การ์ด และโหมดสว่าง/มืด — โดยไม่ต้องเริ่มออกแบบใหม่ทุกโปรเจกต์</p>
     <div class="meta">
-      <span>เครื่อง: <b>tit1622 (Windows)</b></span>
-      <span>ตำแหน่งไฟล์: <b class="mono">~/.claude/skills/tyc-design-system/</b></span>
+      <span>ติดตั้งจาก: <b class="mono">tyc-design-system@pi-claude-md</b></span>
       <span>อ้างอิงจาก: <b>theme-ui-guideline.html</b></span>
     </div>
   </div>
@@ -284,48 +283,16 @@
       <p>Skill <code>tyc-design-system</code> แก้ปัญหานี้ด้วยการบังคับให้ Claude อ่านค่าจาก token/ไฟล์อ้างอิงจริงก่อนเขียนโค้ดทุกครั้ง แทนที่จะจำหรือเดาค่าสีจากบทสนทนาเก่า และมีกติกาตายตัว (ปุ่มต้องมน, หัวตารางต้องฟ้า, ชมพูใช้แค่จุดเน้น ฯลฯ) ที่ Claude ต้องทำตาม เว้นแต่จะถามผู้ใช้ก่อน</p>
       <div class="callout info">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 8h.01M11 12h1v5h1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        <div>Skill นี้เป็น personal skill ผูกกับเครื่องนี้เครื่องเดียว (ดูหัวข้อ "การติดตั้ง" ว่าจะขยายไปทั้งทีมอย่างไร)</div>
+        <div>ทุกคนในทีมติดตั้งได้จาก marketplace เดียวกัน (ดูหัวข้อ "การติดตั้ง")</div>
       </div>
     </section>
 
     <section id="install">
       <h2><span class="num">2</span>การติดตั้ง</h2>
-      <p class="lead">สำหรับเครื่องนี้ (tit1622) ติดตั้งเรียบร้อยแล้ว ไม่ต้องทำอะไรเพิ่ม — หัวข้อนี้มีไว้สำหรับตอนย้ายเครื่อง หรือแจกจ่ายให้เพื่อนร่วมทีม</p>
-
-      <h3>2.1 ติดตั้งแล้วบนเครื่องนี้</h3>
-      <div class="filetree">
-        <span class="d">C:\Users\tit1622\.claude\skills\</span><br>
-        &nbsp;&nbsp;└─ <span class="d">tyc-design-system\</span><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <span class="f">SKILL.md</span><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <span class="new">tyc-design-system-skill-guide.html</span>&nbsp;<span style="color:var(--text-muted); font-size:11px;">← ไฟล์นี้</span><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ <span class="d">reference\</span><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <span class="f">tokens-and-rules.md</span><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <span class="new">component-conventions.md</span><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <span class="new">tailwind-token-audit.md</span><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <span class="f">theme-ui-guideline.html</span><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <span class="f">tyc-design-tokens.css</span><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <span class="f">tyc-design-tokens.json</span><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ <span class="f">tailwind.config.js</span>
-      </div>
-      <p style="margin-top:10px; font-size:13px; color:var(--text-muted);">คู่มือฉบับนี้อยู่ในโฟลเดอร์ skill โดยตรงแล้ว — เวลาคัดลอกหรือแจกจ่ายทั้งโฟลเดอร์ <code>tyc-design-system\</code> (ดูหัวข้อ 2.2 และ 2.3) จะได้คู่มือนี้ติดไปด้วยเสมอ ไม่ต้องส่งแยก</p>
-
-      <h3>2.2 ติดตั้งให้เพื่อนร่วมทีม (คนละเครื่อง)</h3>
-      <p>Personal skill ไม่ sync ข้ามเครื่องอัตโนมัติ ต้องคัดลอกโฟลเดอร์ทั้งหมดไปวางในตำแหน่งเดียวกันบนเครื่องของเพื่อนร่วมทีม:</p>
-      <pre><span class="code-label">PowerShell</span><code># บนเครื่องปลายทาง — วางโฟลเดอร์ tyc-design-system ทั้งก้อนไว้ที่นี่
-New-Item -ItemType Directory -Force "$env:USERPROFILE\.claude\skills" | Out-Null
-Copy-Item -Recurse ".\tyc-design-system" "$env:USERPROFILE\.claude\skills\tyc-design-system"</code></pre>
-      <p>ส่งโฟลเดอร์ <code>tyc-design-system</code> ให้ผ่านทาง shared drive, USB หรือ zip แล้วส่งใน Teams/Slack ก็ได้ — ไม่มี dependency ภายนอก เป็นไฟล์ข้อความล้วน</p>
-
-      <h3>2.3 ติดตั้งแบบผูกกับ repo (แนะนำถ้าต้องการบังคับทั้งทีมอัตโนมัติ)</h3>
-      <p>วิธีข้างบนต้องคัดลอกเองทีละเครื่อง ถ้าต้องการให้ <strong>ทุกคนที่ clone repo ได้ skill ไปด้วยทันทีโดยไม่ต้องติดตั้งเอง</strong> ให้คัดลอกโฟลเดอร์เดียวกันไปไว้ใน path ของ repo แทน แล้ว commit เข้า git:</p>
-      <pre><span class="code-label">ตัวอย่างสำหรับ repo wms</span><code>C:\Users\&lt;user&gt;\bc_project\wms\.claude\skills\tyc-design-system\
-  ├─ SKILL.md
-  └─ reference\ ...</code></pre>
-      <p>ข้อดี: อัปเดตครั้งเดียวใน repo ทุกคนได้ของใหม่ผ่าน <code>git pull</code> ปกติ ไม่ต้องแจกไฟล์เอง — เหมาะกับเป้าหมาย "ทั้งองค์กรใช้ธีมเดียวกัน" มากกว่าแบบ personal</p>
-      <div class="callout warn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <div>ถ้าติดตั้งแบบผูกกับ repo ต้องคอย sync กับต้นฉบับที่ <code>~/.claude/skills/tyc-design-system/</code> เองเวลามีการแก้ theme (ดูโหมด <code>extend</code> ด้านล่าง) ไม่งั้นแต่ละ repo จะเห็นเวอร์ชันธีมไม่ตรงกัน</div>
-      </div>
+      <p class="lead">ติดตั้งผ่าน marketplace <code>pi-claude-md</code> — ทุกเครื่องได้ไฟล์ชุดเดียวกัน และอัปเดตได้จากที่เดียว</p>
+      <pre><span class="code-label">ใน Claude Code</span><code>/plugin marketplace add ken1lnw/pi-claude-md
+/plugin install tyc-design-system@pi-claude-md</code></pre>
+      <p>หรือ clone repo แล้วสั่ง <code>/install-skills</code> เพื่อเลือกติดตั้งหลาย skill พร้อมกัน — รายละเอียดทั้งหมดอยู่ใน README ของ repo <a href="https://github.com/ken1lnw/pi-claude-md">github.com/ken1lnw/pi-claude-md</a></p>
     </section>
 
     <section id="verify">
@@ -410,7 +377,7 @@ Copy-Item -Recurse ".\tyc-design-system" "$env:USERPROFILE\.claude\skills\tyc-de
       </table>
       <div class="callout warn">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <div>ไฟล์เหล่านี้เป็น "สำเนา" — ต้นฉบับจริงอยู่ที่ <code>C:\Users\tit1622\Desktop\theme-ui-guideline.html</code> ถ้าแก้ต้นฉบับแล้วลืม sync กลับเข้า <code>reference\</code> โหมด full/partial ครั้งต่อไปจะยังใช้ข้อมูลเก่าอยู่ — ใช้โหมด <code>extend</code> เพื่อให้ sync ให้อัตโนมัติ</div>
+        <div>ไฟล์เหล่านี้เป็น "สำเนา" — ต้นฉบับจริงอยู่ที่ <code>theme-ui-guideline.html</code> บน Desktop ของผู้ดูแล theme ถ้าแก้ต้นฉบับแล้วลืม sync กลับเข้า <code>reference\</code> ใน repo โหมด full/partial ครั้งต่อไปจะยังใช้ข้อมูลเก่าอยู่ — ใช้โหมด <code>extend</code> เพื่อให้ sync ให้อัตโนมัติ</div>
       </div>
     </section>
 
@@ -439,8 +406,8 @@ Copy-Item -Recurse ".\tyc-design-system" "$env:USERPROFILE\.claude\skills\tyc-de
         <p class="faq-a">ถ้าสั่งผ่านโหมด <code>extend</code> Claude จะ sync ไฟล์กลับเข้า <code>reference/</code> ให้เองเป็นขั้นตอนสุดท้าย แต่ถ้าแก้ไฟล์เองนอกบทสนทนา ต้องคัดลอกไฟล์ที่เปลี่ยนไปทับใน <code>reference/</code> ด้วยตัวเอง ไม่งั้น skill จะยังอ้างอิงเวอร์ชันเก่า</p>
       </div>
       <div class="faq-item">
-        <div class="faq-q"><span class="q-mark">?</span>ทีมอื่นที่ไม่ได้อยู่เครื่องนี้ใช้ skill นี้ได้ไหม</div>
-        <p class="faq-a">ไม่โดยอัตโนมัติ — เป็น personal skill ผูกกับเครื่อง tit1622 เท่านั้น ต้องคัดลอกโฟลเดอร์ไปติดตั้งที่เครื่องอื่น (ดูหัวข้อ "การติดตั้ง") หรือย้ายไปผูกกับ repo แทนถ้าต้องการให้ทุกคนที่ clone repo ได้อัตโนมัติ</p>
+        <div class="faq-q"><span class="q-mark">?</span>คนอื่นในทีมใช้ skill นี้ได้ไหม</div>
+        <p class="faq-a">ได้ — ติดตั้งผ่าน marketplace <code>pi-claude-md</code> ตามหัวข้อ "การติดตั้ง" เมื่อมีการแก้ theme ทุกคนจะได้ของใหม่ตอนอัปเดต plugin</p>
       </div>
       <div class="faq-item">
         <div class="faq-q"><span class="q-mark">?</span>ระบบเดิมมีสี/ปุ่มไม่เหมือน TYC theme อยู่แล้ว Claude จะเขียนทับเลยไหม</div>
@@ -465,7 +432,7 @@ Copy-Item -Recurse ".\tyc-design-system" "$env:USERPROFILE\.claude\skills\tyc-de
 
 <footer>
   <span>TYC Thailand — Internal Tooling Documentation</span>
-  <span>อ้างอิงจาก tyc-design-system skill · เครื่อง tit1622</span>
+  <span>อ้างอิงจาก tyc-design-system skill · pi-claude-md</span>
 </footer>
 
 </body>

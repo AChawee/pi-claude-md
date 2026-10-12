@@ -1,0 +1,26 @@
+{
+  "name": "pi-claude-md",
+  "owner": {
+    "name": "ken1lnw"
+  },
+  "metadata": {
+    "description": "Skills กลางของทีม PI — เลือกติดตั้งได้ทีละตัว"
+  },
+  "plugins": [
+    {
+      "name": "tyc-design-system",
+      "source": "./plugins/tyc-design-system",
+      "description": "ใช้ design system กลางของ TYC Thailand (สี, ปุ่ม, ตาราง, การ์ด, dark/light mode) กับงาน UI ทุกระบบภายใน"
+    },
+    {
+      "name": "create-guide",
+      "source": "./plugins/create-guide",
+      "description": "สร้างคู่มือการใช้งาน HTML ไฟล์เดียวจาก source code, routes และ screenshot (th / en / th+en) พร้อม Playwright auto-capture"
+    },
+    {
+      "name": "ding",
+      "source": "./plugins/ding",
+      "description": "ส่งข้อความ markdown พร้อมรูป/ไฟล์แนบเข้ากลุ่ม DingTalk ของ TYCTH — ต้องกรอก token ใน ding.env ก่อนติดตั้ง"
+    }
+  ]
+}

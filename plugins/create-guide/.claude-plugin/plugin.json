@@ -1,0 +1,9 @@
+{
+  "name": "create-guide",
+  "version": "1.0.0",
+  "description": "สร้างคู่มือการใช้งาน HTML ไฟล์เดียวจาก source code, routes และ screenshot (th / en / th+en) พร้อม Playwright auto-capture",
+  "author": {
+    "name": "Narawit"
+  },
+  "repository": "https://github.com/ken1lnw/pi-claude-md"
+}

@@ -12,3 +12,10 @@ desktop.ini
 # Temp
 *.tmp
 *.log
+
+# Python
+__pycache__/
+
+# Secrets
+.env
+*.env

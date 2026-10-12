@@ -1,9 +1,0 @@
-{
-  "name": "example-plugin",
-  "version": "1.0.0",
-  "description": "ตัวอย่าง plugin structure",
-  "author": "your-name",
-  "tags": ["example", "template"],
-  "status": "stable",
-  "created_at": "2025-01-01"
-}

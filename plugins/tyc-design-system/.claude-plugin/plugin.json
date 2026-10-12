@@ -1,0 +1,9 @@
+{
+  "name": "tyc-design-system",
+  "version": "1.0.0",
+  "description": "ใช้ design system กลางของ TYC Thailand (สี, ปุ่ม, ตาราง, การ์ด, dark/light mode) กับงาน UI ทุกระบบภายใน",
+  "author": {
+    "name": "Narawit"
+  },
+  "repository": "https://github.com/ken1lnw/pi-claude-md"
+}
