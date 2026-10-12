@@ -45,6 +45,7 @@ class Catalog(unittest.TestCase):
             fm = frontmatter(skill_md)
             self.assertRegex(fm, rf"(?m)^name: {re.escape(skill_md.parent.name)}$", skill_md)
             self.assertRegex(fm, r"(?m)^description: \S", skill_md)
+            self.assertNotRegex(fm, r"(?m)^description: .*: ", f"{skill_md}: ': ' ใน description ทำให้ YAML parse ไม่ผ่าน")
             self.assertRegex(fm, r"(?m)^metadata:\n(  \w+: .+\n?)+", skill_md)
             self.assertNotRegex(fm, r"(?m)^  version:", f"{skill_md}: version อยู่ใน plugin.json เท่านั้น")
 

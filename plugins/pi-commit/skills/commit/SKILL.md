@@ -1,6 +1,6 @@
 ---
 name: commit
-description: เขียน commit message ตามมาตรฐานทีม "type(scope): description" จาก diff แล้ว commit ให้ แยก commit ถ้างานปนหลายเรื่อง ไม่ push ใช้ทุกครั้งที่ผู้ใช้ขอให้ commit — "/pi-commit:commit", "commit ให้หน่อย", "commit งาน", "ช่วยเขียน commit message", "commit this", "make a commit"
+description: เขียน commit message ตามมาตรฐานทีม type(scope) ตามด้วย description จาก diff แล้ว commit ให้ แยก commit ถ้างานปนหลายเรื่อง ไม่ push ใช้ทุกครั้งที่ผู้ใช้ขอให้ commit — "/pi-commit:commit", "commit ให้หน่อย", "commit งาน", "ช่วยเขียน commit message", "commit this", "make a commit"
 metadata:
   author: ken1lnw
   created: 2026-10-12

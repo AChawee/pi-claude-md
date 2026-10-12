@@ -1,6 +1,6 @@
 {
   "name": "pi-commit",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "มาตรฐาน commit ของทีม: git user.name = รหัสพนักงาน + hook ตรวจ format type(scope): description + /pi-commit:commit ช่วยเขียน message — ต้องรัน /pi-commit:setup หลังติดตั้ง",
   "author": {
     "name": "ken1lnw"
