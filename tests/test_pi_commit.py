@@ -208,7 +208,7 @@ class EdgeCases(Installed):
         self.assertAccepted(r)
         self.assertIn("type(scope): description", seen.read_text(encoding="utf-8"))
         message = self.git("log", "-1", "--format=%B").stdout
-        self.assertEqual(message.strip(), GOOD)
+        self.assertEqual(message.strip(), f"{GOOD}\n\nEmp: {CODE}")
 
     def test_amend(self):
         self.assertAccepted(self.commit(GOOD))
@@ -271,6 +271,48 @@ class Identity(Installed):
         r = self.commit(BAD)
         self.assertIn("git user.name is", r.stderr)
         self.assertIn("first line must be", r.stderr)
+
+
+class EmployeeTrailer(Installed):
+    def body(self):
+        return self.git("log", "-1", "--format=%B").stdout.strip()
+
+    def test_accepted_commit_gets_trailer(self):
+        self.assertAccepted(self.commit(GOOD))
+        self.assertEqual(self.body(), f"{GOOD}\n\nEmp: {CODE}")
+        self.assertEqual(self.git("log", "-1", "--format=%(trailers:key=Emp,valueonly)").stdout.strip(), CODE)
+
+    def test_trailer_joins_existing_trailers(self):
+        self.assertAccepted(self.commit(GOOD, "รายละเอียด", "Co-Authored-By: Claude <noreply@anthropic.com>"))
+        self.assertTrue(self.body().endswith(f"Co-Authored-By: Claude <noreply@anthropic.com>\nEmp: {CODE}"))
+
+    def test_amend_replaces_instead_of_duplicating(self):
+        self.assertAccepted(self.commit(GOOD))
+        self.assertAccepted(self.commit("fix(login): แก้ปุ่มบันทึกและข้อความเตือน", "Emp: 9999", extra=("--amend",)))
+        self.assertAccepted(self.git("commit", "--amend", "--no-edit", "--allow-empty", check=False))
+        self.assertEqual(self.body().count("Emp:"), 1)
+        self.assertIn(f"Emp: {CODE}", self.body())
+
+    def test_windows_line_endings_stay_clean(self):
+        self.assertAccepted(self.commit_file(f"{GOOD}\r\n\r\nรายละเอียด\r\n"))
+        self.assertNotIn("\r", self.body())
+        self.assertTrue(self.body().endswith(f"Emp: {CODE}"))
+
+    def test_deploy_line_is_kept(self):
+        self.assertAccepted(self.commit(GOOD, "deploy!"))
+        self.assertEqual(self.body(), f"{GOOD}\n\ndeploy!\n\nEmp: {CODE}")
+
+    def test_exempt_and_rejected_commits_are_untouched(self):
+        self.assertAccepted(self.commit("deploy!"))
+        self.assertEqual(self.body(), "deploy!")
+        self.assertAccepted(self.commit('Revert "fix(login): แก้ปุ่มบันทึกกดไม่ได้"'))
+        self.assertNotIn("Emp:", self.body())
+        self.assertNotEqual(self.commit(BAD).returncode, 0)
+
+    def test_other_repos_are_untouched(self):
+        self.git("remote", "set-url", "origin", "https://github.com/ken1lnw/pi-claude-md.git")
+        self.assertAccepted(self.commit(GOOD))
+        self.assertEqual(self.body(), GOOD)
 
 
 class Setup(Sandbox):

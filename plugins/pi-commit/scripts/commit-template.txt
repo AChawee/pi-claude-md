@@ -14,3 +14,4 @@
 #
 # Description: Thai or English, at least 10 characters.
 # A line with only deploy! still triggers the image build.
+# "Emp: <code>" is added automatically when the commit passes.

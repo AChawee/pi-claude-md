@@ -677,6 +677,15 @@ OK</code></pre></div>
     </table>
   </div>
 
+  <h3><span class="l-th"><code>Emp: &lt;รหัส&gt;</code> — เติมให้อัตโนมัติ</span><span class="l-en"><code>Emp: &lt;code&gt;</code> — added for you</span></h3>
+  <p class="l-th">เมื่อ commit ผ่าน hook จะเติมบรรทัด <code>Emp: &lt;รหัส&gt;</code> ไว้ท้าย message ให้เอง <b>ไม่ต้องพิมพ์</b> ถ้ามีอยู่แล้ว (เช่นตอน <code>--amend</code>) จะแทนค่าเดิม ไม่เติมซ้ำ บรรทัดนี้ทำให้คนที่เปิดดู commit บนเว็บ GitHub เห็นรหัสด้วย เพราะหน้าเว็บ GitHub แสดงชื่อบัญชี GitHub ไม่ใช่ <code>user.name</code></p>
+  <p class="l-en">When a commit passes, the hook appends <code>Emp: &lt;code&gt;</code> to the message for you — <b>nothing to type</b>. If it is already there (e.g. on <code>--amend</code>) the value is replaced, never duplicated. This line lets anyone viewing the commit on github.com see the code too, because the GitHub web page shows the GitHub account, not <code>user.name</code>.</p>
+  <div class="code"><pre><code>fix(login): แก้ปุ่มบันทึกกดไม่ได้
+
+Emp: 1234</code></pre></div>
+  <p class="l-th">commit ที่ไม่ถูกตรวจ (ด้านล่าง) จะไม่ถูกเติม</p>
+  <p class="l-en">Commits that are not checked (below) are left as they are.</p>
+
   <h3><span class="l-th">สิ่งที่ไม่ถูกตรวจ</span><span class="l-en">What is not checked</span></h3>
   <ul class="rules">
     <li><span class="l-th">commit ที่มีแค่ <code>deploy!</code></span><span class="l-en">Commits that are only <code>deploy!</code></span></li>
@@ -903,6 +912,14 @@ pi-commit: commit rejected
 
 <section class="block faq" id="faq" aria-labelledby="h-faq">
   <h2 id="h-faq"><span class="l-th">คำถามที่พบบ่อย</span><span class="l-en">FAQ</span></h2>
+
+  <details>
+    <summary><span><span class="l-th">บนเว็บ GitHub เห็นชื่ออะไร</span><span class="l-en">Which name shows on github.com?</span></span></summary>
+    <div class="a">
+      <p class="l-th">หน้าเว็บ GitHub แสดง <b>บัญชี GitHub</b> ของคนที่ commit (จับคู่จาก email) ไม่ใช่ <code>user.name</code> รหัสพนักงานจึงเห็นได้จากบรรทัด <code>Emp:</code> ใต้ข้อความ commit ส่วน <code>git log</code>, VS Code และ GitHub API (<code>commit.author.name</code>) แสดงรหัสเป็น author ตรง ๆ</p>
+      <p class="l-en">github.com shows the committer's <b>GitHub account</b> (matched by email), not <code>user.name</code>, so the code is visible through the <code>Emp:</code> line under the message. <code>git log</code>, VS Code and the GitHub API (<code>commit.author.name</code>) show the code as the author directly.</p>
+    </div>
+  </details>
 
   <details>
     <summary><span><span class="l-th">commit ที่ผิดรูปแบบหลุดเข้าไปได้</span><span class="l-en">A badly formatted commit went through</span></span></summary>

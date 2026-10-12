@@ -25,7 +25,7 @@ metadata:
    ถ้าแยก ให้ `git reset -q` แล้ว `git add <ไฟล์ของกลุ่ม>` ทีละกลุ่ม ทำข้อ 5–7 ทีละ commit
 5. ร่าง message: เลือก type, scope จาก path ที่แก้ (ไม่แน่ใจให้ละไว้), description บอกว่าทำอะไรที่ไหน
    ใช้ภาษาเดียวกับที่ผู้ใช้คุยด้วย ถ้างานมีหลายจุดให้เขียน body เป็น bullet สั้น ๆ
-   ผู้ใช้บอกว่าจะ deploy → เพิ่มบรรทัด `deploy!` ท้าย body
+   ผู้ใช้บอกว่าจะ deploy → เพิ่มบรรทัด `deploy!` ท้าย body · ไม่ต้องใส่ `Emp:` (hook เติมให้)
 6. แสดง message ให้ดู แล้วถามด้วย AskUserQuestion: commit / แก้ข้อความ / ยกเลิก
 7. commit ด้วย heredoc:
    ```bash

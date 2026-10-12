@@ -64,7 +64,7 @@ claude
 - **ทำอะไร:** ตั้ง `git user.name` เป็นรหัสพนักงาน และติดตั้ง hook ที่ไม่ยอมให้ commit ถ้า message ไม่ตรง `type(scope): description` เพื่อให้ระบบรู้ว่าใครทำอะไร
 - **ใช้เมื่อ:** ทุกครั้งที่ commit ใน repo ของ `tycthailand` — ผ่าน `/pi-commit:commit` หรือ commit เองตามปกติ (terminal, VS Code)
 - **ตัวอย่าง:** `/pi-commit:commit` · `commit งานนี้ให้หน่อย`
-- **คู่มือฉบับเต็ม:** [เปิดบนเว็บ](https://ken1lnw.github.io/pi-claude-md/pi-commit-guide.html) · [ไฟล์ใน repo](./docs/pi-commit-guide.html) (flowchart, format, ขั้นตอนทีละ step)
+- **คู่มือฉบับเต็ม:** [docs/pi-commit-guide.html](./docs/pi-commit-guide.html) — ดาวน์โหลดแล้วเปิดในเบราว์เซอร์ (flowchart, format, ขั้นตอนทีละ step)
 - **ต้องมีเพิ่ม:** git เท่านั้น (Windows ใช้ Git for Windows) ไม่ต้องลง Python
 
 ## สิ่งที่ต้องมี
@@ -172,6 +172,7 @@ type(scope): description
 - `type`: `feat` `fix` `perf` `refactor` `docs` `test` `style` `build` `ci` `chore` `security` `revert` `etc`
 - `scope` ไม่บังคับ · description ไทยหรืออังกฤษ อย่างน้อย 10 ตัวอักษร
 - ไม่ตรวจ: commit ที่มีแค่ `deploy!`, merge, revert, fixup · ตรวจเฉพาะ repo ที่ remote เป็น `tycthailand`
+- commit ที่ผ่านจะถูกเติมบรรทัด `Emp: <รหัส>` ท้าย message ให้อัตโนมัติ (ไม่ต้องพิมพ์) เพื่อให้เห็นรหัสบนหน้าเว็บ GitHub ด้วย
 
 อัปเดต plugin แล้วให้รัน `/pi-commit:setup` ซ้ำเพื่อ copy hook ตัวใหม่ · ถอน: `sh plugins/pi-commit/scripts/setup.sh uninstall` (คืน `user.name` เดิม)
 

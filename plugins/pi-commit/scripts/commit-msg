@@ -63,7 +63,10 @@ else
   add_problem "first line must be \"type(scope): description\" (lowercase type, one space after the colon)"
 fi
 
-[ -z "$problems" ] && run_repo_hook "$@"
+if [ -z "$problems" ]; then
+  git interpret-trailers --in-place --if-exists replace --trailer "Emp: $author_name" "$msg_file"
+  run_repo_hook "$@"
+fi
 
 cat >&2 <<EOF
 pi-commit: commit rejected

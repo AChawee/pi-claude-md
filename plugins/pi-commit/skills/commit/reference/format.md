@@ -30,6 +30,10 @@ body (ไม่บังคับ)
 | `revert` | ย้อน commit |
 | `etc` | งานที่ไม่เข้าหมวดไหน |
 
+## Emp trailer
+
+hook เติม `Emp: <รหัส>` ท้าย message ให้เองเมื่อ commit ผ่าน — **ห้ามใส่เอง** ถ้ามีอยู่แล้วจะถูกแทนค่า
+
 ## ไม่ถูกตรวจ
 
 commit ที่มีแค่ `deploy!`, merge (`Merge ...`), `Revert "..."`, `fixup!` / `squash!` / `amend!`
